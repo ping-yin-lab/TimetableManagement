@@ -167,6 +167,15 @@ class teacherDatabase {
         TEusersCollection.find().forEach(document ->
                 System.out.println("Username: " + document.get("username") + ", Password: " + document.get("password")));
     }
+    
+    public void deleteTeacher(String teacherId) {
+        try {
+        	TEusersCollection.deleteOne(new Document("Teacher_ID", teacherId));
+            System.out.println("Teacher deleted successfully!");
+        } catch (com.mongodb.MongoException e) {
+            System.err.println("Error deleting teacher from MongoDB: " + e.getMessage());
+        }
+    }
 }
 
 public class tt_admin {
@@ -180,7 +189,8 @@ public class tt_admin {
             System.out.println("2. Display Students");
             System.out.println("3. Add Teacher");
             System.out.println("4. Display Teachers");
-            System.out.println("5. Exit");
+            System.out.println("5. Delete Teacher");
+            System.out.println("6. Exit");
             System.out.print("Enter your choice: ");
             
             int choice = scanner.nextInt();
@@ -231,8 +241,13 @@ public class tt_admin {
                 case 4:
                 	TEdatabase.displayTEUsers();
                     break;
-
+                    
                 case 5:
+                	 System.out.print("Enter teacher ID to delete: ");
+                     String teacherIdToDelete = scanner.nextLine();
+                     TEdatabase.deleteTeacher(teacherIdToDelete);
+                     break;
+                case 6:
                     System.out.println("Exiting the admin panel. Goodbye!");
                     System.exit(0);
 
