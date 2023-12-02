@@ -13,7 +13,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-class studentUser {
+class User {
 	private String id;
     private String fname;
     private String lname;
@@ -21,7 +21,7 @@ class studentUser {
     private String username;
     private String password;
 
-    public studentUser(String id, String fname, String lname, String course, String username, String password) {
+    public User(String id, String fname, String lname, String course, String username, String password) {
     	this.id = id;
         this.fname = fname;
         this.lname = lname;
@@ -48,6 +48,18 @@ class studentUser {
     public String getPassword() {
         return password;
     }
+}
+
+class studentUser extends User{
+	public studentUser(String id, String fname, String lname, String course, String username, String password) {
+		super(id, fname, lname, course, username, password);
+	}
+}
+
+class teacherUser extends User{
+	public teacherUser(String id, String fname, String lname, String course, String username, String password) {
+		super(id, fname, lname, course, username, password);
+	}
 }
 	
 class studentDatabase { 
@@ -100,48 +112,6 @@ class studentDatabase {
         System.out.println("List of Students:");
         STusersCollection.find().forEach(document ->
                 System.out.println("Username: " + document.get("username") + ", Password: " + document.get("password")));
-    }
-}
-
-class teacherUser {
-	private String id;
-    private String fname;
-    private String lname;
-    private String course;
-    private String username;
-    private String password;
-
-    public teacherUser(String id, String fname, String lname, String course, String username, String password) {
-    	this.id = id;
-        this.fname = fname;
-        this.lname = lname;
-        this.course = course;
-    	this.username = username;
-        this.password = password;
-    }
-    
-    public String getID() {
-        return id;
-    }
-    
-    public String getFName() {
-        return fname;
-    }
-    
-    public String getLName() {
-        return lname;
-    }
-    
-    public String getCourse() {
-        return course;
-    }
-    
-    public String getUsername() {
-        return username;
-    }
-    
-    public String getPassword() {
-        return password;
     }
 }
 
@@ -198,8 +168,6 @@ class teacherDatabase {
                 System.out.println("Username: " + document.get("username") + ", Password: " + document.get("password")));
     }
 }
-
-
 
 public class tt_admin {
     public static void main(String[] args) {
