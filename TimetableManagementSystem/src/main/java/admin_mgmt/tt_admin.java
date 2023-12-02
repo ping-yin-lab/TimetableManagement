@@ -113,6 +113,15 @@ class studentDatabase {
         STusersCollection.find().forEach(document ->
                 System.out.println("Username: " + document.get("username") + ", Password: " + document.get("password")));
     }
+    
+    public void deleteSTuser(String teacherId) {
+        try {
+        	STusersCollection.deleteOne(new Document("Student_ID", teacherId));
+            System.out.println("Student deleted successfully!");
+        } catch (com.mongodb.MongoException e) {
+            System.err.println("Error deleting student: " + e.getMessage());
+        }
+    }
 }
 
 
@@ -168,7 +177,7 @@ class teacherDatabase {
                 System.out.println("Username: " + document.get("username") + ", Password: " + document.get("password")));
     }
     
-    public void deleteTeacher(String teacherId) {
+    public void deleteTEuser(String teacherId) {
         try {
         	TEusersCollection.deleteOne(new Document("Teacher_ID", teacherId));
             System.out.println("Teacher deleted successfully!");
@@ -187,10 +196,11 @@ public class tt_admin {
         while (true) {
             System.out.println("1. Add Student");
             System.out.println("2. Display Students");
-            System.out.println("3. Add Teacher");
-            System.out.println("4. Display Teachers");
-            System.out.println("5. Delete Teacher");
-            System.out.println("6. Exit");
+            System.out.println("3. Delete Student");
+            System.out.println("4. Add Teacher");
+            System.out.println("5. Display Teachers");
+            System.out.println("6. Delete Teacher");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
             
             int choice = scanner.nextInt();
@@ -219,8 +229,14 @@ public class tt_admin {
                 case 2:
                     STdatabase.displaySTUsers();
                     break;
-                
+                    
                 case 3:
+               	 System.out.print("Enter student ID to delete: ");
+                    String STId = scanner.nextLine();
+                    STdatabase.deleteSTuser(STId);
+                    break;
+                
+                case 4:
                 	System.out.print("Enter Teacher Id: ");
                 	String TEid = scanner.nextLine();
                 	System.out.print("Enter First Name: ");
@@ -238,16 +254,17 @@ public class tt_admin {
                     TEdatabase.TEaddUser(TEnewUser);
                     break;
                     
-                case 4:
+                case 5:
                 	TEdatabase.displayTEUsers();
                     break;
                     
-                case 5:
-                	 System.out.print("Enter teacher ID to delete: ");
-                     String teacherIdToDelete = scanner.nextLine();
-                     TEdatabase.deleteTeacher(teacherIdToDelete);
-                     break;
                 case 6:
+                	 System.out.print("Enter teacher ID to delete: ");
+                     String TEId = scanner.nextLine();
+                     TEdatabase.deleteTEuser(TEId);
+                     break;
+                     
+                case 7:
                     System.out.println("Exiting the admin panel. Goodbye!");
                     System.exit(0);
 
