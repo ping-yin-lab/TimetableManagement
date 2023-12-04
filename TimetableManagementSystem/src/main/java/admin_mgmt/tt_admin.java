@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -12,6 +13,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 
 class User {
 	private String id;
@@ -114,6 +117,37 @@ class studentDatabase {
                 System.out.println("Username: " + document.get("username") + ", Password: " + document.get("password")));
     }
     
+    public void STUpdate(String studentId, String newFName, String newLName, String newCourse, String newUsername, String newPassword) {
+        try {
+            Document filter = new Document("Student_id", studentId);
+            Document update = new Document();
+            if (newFName != null && !newFName.isEmpty()) {
+            	
+                Updates.set("first_name", newFName);
+            }
+            if (newLName != null && !newLName.isEmpty()) {
+                update.append("$set", new Document("last_name", newLName));
+            }
+            if (newCourse != null && !newCourse.isEmpty()) {
+                update.append("$set", new Document("name", newCourse));
+            }
+            if (newUsername != null && !newUsername.isEmpty()) {
+                update.append("$set", new Document("username", newUsername));
+            }
+            if (newPassword != null && !newPassword.isEmpty()) {
+                update.append("$set", new Document("password", newPassword));
+            }
+            if (!update.isEmpty()) {
+            	STusersCollection.updateOne(filter, update);
+                System.out.println("Student updated successfully!");
+            } else {
+                System.out.println("No valid fields to update for the student.");
+            }
+        } catch (com.mongodb.MongoException e) {
+            System.err.println("Error updating student in MongoDB: " + e.getMessage());
+        }
+    }
+    
     public void deleteSTuser(String teacherId) {
         try {
         	STusersCollection.deleteOne(new Document("Student_ID", teacherId));
@@ -177,6 +211,48 @@ class teacherDatabase {
                 System.out.println("Username: " + document.get("username") + ", Password: " + document.get("password")));
     }
     
+    public void TEUpdate(String userIdToUpdate, String newFName, String newLName, String newCourse, String newUsername, String newPassword) {
+        try {
+        	Bson filter = Filters.eq("Teacher_id", userIdToUpdate);
+        	
+        	Document updateTE = new Document("Teacher_id", userIdToUpdate)
+            		.append("title", newFName)
+            		.append("first_name", newLName)
+            		.append("last_name", newCourse)
+            		.append("course", newUsername)
+            		.append("username", newPassword);
+        	
+        	Document updatedTeacher = new Document ("$set",updateTE);
+        	TEusersCollection.updateOne(filter, updatedTeacher);
+        	
+//            Document filter = new Document("Teacher_id", userIdToUpdate);
+//            Document update = new Document();
+//            if (newFName != null && !newFName.isEmpty()) {
+//            	TEusersCollection.updateOne(Filters.eq("Teacher_id", userIdToUpdate), Updates.set("first_name", newFName));
+//            }
+//            if (newLName != null && !newLName.isEmpty()) {
+//                update.append("$set", new Document("last_name", newLName));
+//            }
+//            if (newCourse != null && !newCourse.isEmpty()) {
+//                update.append("$set", new Document("course", newCourse));
+//            }
+//            if (newUsername != null && !newUsername.isEmpty()) {
+//            	update.append("$set", new Document("course", newUsername));
+//            }
+//            if (newPassword != null && !newPassword.isEmpty()) {
+//                update.append("$set", new Document("password", newPassword));
+//            }
+//            if (!update.isEmpty()) {
+//            	TEusersCollection.updateOne(filter, update);
+                System.out.println("Teacher updated successfully!");
+//            } else {
+                System.out.println("No valid fields to update for the teacher.");
+            //}
+        } catch (com.mongodb.MongoException e) {
+            System.err.println("Error updating teacher in MongoDB: " + e.getMessage());
+        }
+    }
+    
     public void deleteTEuser(String teacherId) {
         try {
         	TEusersCollection.deleteOne(new Document("Teacher_ID", teacherId));
@@ -200,7 +276,8 @@ public class tt_admin {
             System.out.println("4. Add Teacher");
             System.out.println("5. Display Teachers");
             System.out.println("6. Delete Teacher");
-            System.out.println("7. Exit");
+            System.out.println("7. Update User");
+            System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
             
             int choice = scanner.nextInt();
@@ -265,6 +342,32 @@ public class tt_admin {
                      break;
                      
                 case 7:
+                	System.out.print("Enter user type (1 for Teacher, 2 for Student): ");
+                    int userTypeToUpdate = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("Enter user ID to update: ");
+                    String userIdToUpdate = scanner.nextLine();
+                    System.out.print("Enter new First Name (or press Enter to skip): ");
+                    String newFName = scanner.nextLine();
+                    System.out.print("Enter new Last Name (or press Enter to skip): ");
+                    String newLName = scanner.nextLine();
+                    System.out.print("Enter new Course (or press Enter to skip): ");
+                    String newCourse = scanner.nextLine();
+                    System.out.print("Enter new username (or press Enter to skip): ");
+                    String newUsername = scanner.nextLine();
+                    System.out.print("Enter new password (or press Enter to skip): ");
+                    String newPassword = scanner.nextLine();
+
+                    if (userTypeToUpdate == 1) {
+                        TEdatabase.TEUpdate(userIdToUpdate, newFName, newLName, newCourse, newUsername, newPassword);
+                    } else if (userTypeToUpdate == 2) {
+                        STdatabase.STUpdate(userIdToUpdate, newFName, newLName, newCourse, newUsername, newPassword);
+                    } else {
+                        System.out.println("Invalid user type. Please enter 1 for Teacher or 2 for Student.");
+                    }
+                    break;
+                    
+                case 8:
                     System.out.println("Exiting the admin panel. Goodbye!");
                     System.exit(0);
 
