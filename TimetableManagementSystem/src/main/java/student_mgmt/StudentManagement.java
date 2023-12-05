@@ -18,7 +18,7 @@ public class StudentManagement {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        Menu: while (true) {
+        while (true) {
             System.out.println("Welcome to Student System");
             System.out.println("==========================");
             System.out.println("Choose the menu below");
@@ -31,7 +31,7 @@ public class StudentManagement {
             scanner.nextLine();
             switch (choice) {
                 case 1:
-                    while (true) {
+                    StudentManagementSystem: while (true) {
                         System.out.println("Student Schedule Management");
                         System.out.println("Your Schedule");
                         System.out.println("==========================");
@@ -106,6 +106,7 @@ public class StudentManagement {
                         }
                         break;
                     }
+                    break;
                 case 2:
                     MsgSystem: while (true) {
                         while (true) {
@@ -131,14 +132,12 @@ public class StudentManagement {
                                     System.out.println("Message Content: ");
                                     String content = scanner.nextLine();
                                     System.out.println("Are you sure to send this message? (y/n)");
-
                                     String sendMsgChoice = scanner.nextLine().toLowerCase();
                                     switch (sendMsgChoice) {
                                         case "y":
                                             LocalDateTime stamp = LocalDateTime.now();
                                             Message m = new Message("1", title, content, stamp, "Student 1", receiver);
                                             MessageActions.WriteMessage(m);
-                                            System.out.println("Message sent successfully");
                                             break;
                                         case "n":
                                             break;
@@ -152,7 +151,7 @@ public class StudentManagement {
                                     String msgTitle = scanner.nextLine();
                                     Bson filter = Filters.eq("title", msgTitle);
                                     Databases.STUDENT_SCHE_DATABASE().deleteOne(filter);
-                                    System.out.println("Deletion successfully");
+                                    System.out.println("Message delete successfully");
                                     break;
                                 case 4:
                                     break MsgSystem;
@@ -166,15 +165,52 @@ public class StudentManagement {
                     }
                     break;
                 case 3:
-                while (true) {
-                    System.out.println("Request System");
+                    RequestSystem: while (true) {
+                        while (true) {
+                            System.out.println("Request System");
                             System.out.println("==========================");
-                            System.out.println("1. Send a request to Admin");
-                            System.out.println("4. Back to main menu");
-                            System.out.println("5. Quit");
+                            System.out.println("1. Display requests sent");
+                            System.out.println("2. Send a request to Admin");
+                            System.out.println("3. Back to main menu");
+                            System.out.println("4. Quit");
                             System.out.print("Input : ");
+
+                            int requestChoice = scanner.nextInt();
+                            scanner.nextLine();
+                            switch (requestChoice) {
+                                case 1:
+                                    RequestActions.DisplayRequest();
+                                    break;
+                                case 2:
+                                    System.out.println("Request to the admin: ");
+                                    String content = scanner.nextLine();
+                                    System.out.println("Are you sure to send this request? (y/n)");
+                                    String sendMsgChoice = scanner.nextLine().toLowerCase();
+                                    switch (sendMsgChoice) {
+                                        case "y":
+                                            LocalDateTime stamp = LocalDateTime.now();
+                                            Request m = new Request("1", content, stamp, "Student 1");
+                                            RequestActions.WriteRequest(m);    
+                                            break;
+                                        case "n":
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    break;
+                                case 3:
+                                    break RequestSystem;
+                                case 4:
+                                    System.exit(0);
+                                default:
+                                    break;
+                            }
                             break;
-                }
+                        }
+                    }
+                    break;
+                case 4:
+                    System.exit(0);
                 default:
                     break;
             }

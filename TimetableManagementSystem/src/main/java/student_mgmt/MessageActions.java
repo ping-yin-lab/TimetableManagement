@@ -12,6 +12,7 @@ public class MessageActions {
                 .append("sender", m.getSender())
                 .append("receiver", m.getReciever());
         Databases.MESSAGE_DATABASE().insertOne(userDocument);
+        System.out.println("Message Sent successfully!\n");
     }
 
     public static void UpdateMessage(Message m, Bson updateFilter) {
@@ -23,7 +24,7 @@ public class MessageActions {
                 .append("receiver", m.getReciever());
 
         Databases.STUDENT_SCHE_DATABASE().insertOne(updateDoc);
-        System.out.println("Message updated successfully!");
+        System.out.println("Message updated successfully!\n");
         Bson updateop = new Document("$set", updateDoc);
         Databases.STUDENT_SCHE_DATABASE().updateOne(updateFilter, updateop);
     }

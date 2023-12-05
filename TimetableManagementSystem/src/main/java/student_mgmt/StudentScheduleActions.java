@@ -22,9 +22,9 @@ public class StudentScheduleActions {
         // validate if local datetime is overlapped with existed schedules
         if (ValidateSchedule(ss)) {
             Databases.STUDENT_SCHE_DATABASE().insertOne(userDocument);
-            System.out.println("Schedule added successfully!");
+            System.out.println("Schedule added successfully!\n");
         } else {
-            System.out.println("Add schedule failed, please choose another time available.");
+            System.out.println("Add schedule failed, please choose another available time.\n");
         }
     }
 
@@ -41,7 +41,7 @@ public class StudentScheduleActions {
             Bson updateop = new Document("$set", updateDoc);
             Databases.STUDENT_SCHE_DATABASE().updateOne(updateFilter, updateop);
         } else {
-            System.out.println("Update schedule failed, please choose another time available.");
+            System.out.println("Update schedule failed, please choose another available time.\n");
         }
     }
 
