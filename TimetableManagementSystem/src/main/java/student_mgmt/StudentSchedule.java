@@ -2,7 +2,7 @@ package student_mgmt;
 
 import java.time.LocalDateTime;
 
-public class Student_Schedule {
+public class StudentSchedule {
 	private int id;
 	public int studentId;
 	public String schedulename;
@@ -10,7 +10,7 @@ public class Student_Schedule {
 	public LocalDateTime endtime;
 	public String type;
 
-	public Student_Schedule(int studentId, String name, LocalDateTime sttime, LocalDateTime edtime, String type) {
+	public StudentSchedule(int studentId, String name, LocalDateTime sttime, LocalDateTime edtime, String type) {
 		this.studentId = studentId;
 		this.schedulename = name;
 		this.starttime = sttime;
