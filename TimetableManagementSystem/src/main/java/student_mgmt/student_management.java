@@ -13,7 +13,6 @@ import com.mongodb.client.model.Filters;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-
 public class student_management {
 
     public static void AddStudentSchedule(Student_Schedule ss) {
@@ -51,9 +50,16 @@ public class student_management {
 
     public static void displaySchedule() {
         System.out.println("List of Schedule:");
+        Databases.TEACHER_SCHE_DATABASE().find()
+                .forEach(document -> System.out
+                        .println("Teacher Schedule" + "\n Title: " + document.get("title") + "\n Start time: "
+                                + document.get("start time")
+                                + "\n End time: " + document.get("end time") + "\n==========================\n"));
+
         Databases.STUDENT_SCHE_DATABASE().find()
                 .forEach(document -> System.out
-                        .println("Title: " + document.get("title") + "\n Start time: " + document.get("start time")
+                        .println("Student Schedule" + "\nTitle: " + document.get("title") + "\n Start time: "
+                                + document.get("start time")
                                 + "\n End time: " + document.get("end time") + "\n==========================\n"));
     }
 
@@ -65,9 +71,12 @@ public class student_management {
         LocalDateTime edt = ss.getEndtime();
         while (te_cursor.hasNext()) {
             Document document = te_cursor.next();
-            LocalDateTime scheduledSdt = ((Date) document.get("start time")).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            LocalDateTime scheduledEdt = ((Date) document.get("end time")).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            if (sdt.isAfter(scheduledSdt) && sdt.isBefore(scheduledEdt) ||
+            LocalDateTime scheduledSdt = ((Date) document.get("start time")).toInstant().atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            LocalDateTime scheduledEdt = ((Date) document.get("end time")).toInstant().atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            if (sdt.equals(edt) ||
+                    sdt.isAfter(scheduledSdt) && sdt.isBefore(scheduledEdt) ||
                     edt.isAfter(scheduledEdt) && edt.isBefore(scheduledEdt) ||
                     sdt.isBefore(scheduledEdt) && edt.isBefore(scheduledEdt)) {
                 return false;
@@ -75,9 +84,12 @@ public class student_management {
         }
         while (st_cursor.hasNext()) {
             Document document = st_cursor.next();
-            LocalDateTime scheduledSdt = ((Date) document.get("start time")).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            LocalDateTime scheduledEdt = ((Date) document.get("end time")).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            if (sdt.isAfter(scheduledSdt) && sdt.isBefore(scheduledEdt) ||
+            LocalDateTime scheduledSdt = ((Date) document.get("start time")).toInstant().atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            LocalDateTime scheduledEdt = ((Date) document.get("end time")).toInstant().atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            if (sdt.equals(edt) ||
+                    sdt.isAfter(scheduledSdt) && sdt.isBefore(scheduledEdt) ||
                     edt.isAfter(scheduledEdt) && edt.isBefore(scheduledEdt) ||
                     sdt.isBefore(scheduledEdt) && edt.isBefore(scheduledEdt)) {
                 return false;
@@ -88,9 +100,17 @@ public class student_management {
 
     public static void displaySchedulewithID() {
         System.out.println("List of Schedule:");
-        AtomicInteger index = new AtomicInteger(1);
+        AtomicInteger s_index = new AtomicInteger(1);
+        AtomicInteger t_index = new AtomicInteger(1);
 
-        Databases.STUDENT_SCHE_DATABASE().find().forEach(document -> System.out.println(index.getAndIncrement()
+        Databases.STUDENT_SCHE_DATABASE().find().forEach(document -> System.out.println(s_index.getAndIncrement()
+                + "  Id : " + document.get("_id")
+                + "\nTitle: " + document.get("title")
+                + "\nStart time: " + document.get("start time")
+                + "\nEnd time: " + document.get("end time")
+                + "\n==========================\n"));
+
+        Databases.TEACHER_SCHE_DATABASE().find().forEach(document -> System.out.println(t_index.getAndIncrement()
                 + "  Id : " + document.get("_id")
                 + "\nTitle: " + document.get("title")
                 + "\nStart time: " + document.get("start time")

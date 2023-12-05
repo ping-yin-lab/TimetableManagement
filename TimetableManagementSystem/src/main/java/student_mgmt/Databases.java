@@ -21,7 +21,7 @@ public class Databases {
             MongoDatabase database = mongoClient.getDatabase(Schedule_databaseName);
             TEACHER_SCHE_DATABASE = database.getCollection("TT_Sche");
             STUDENT_SCHE_DATABASE = database.getCollection("Student_Sche");
-            System.out.println("Connected Successfully");
+            // System.out.println("Connected Successfully");
         } catch (Exception e) {
             System.err.println("Error connecting: " + e.getMessage());
             e.printStackTrace();
