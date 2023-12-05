@@ -212,42 +212,30 @@ class teacherDatabase {
     }
     
     public void TEUpdate(String userIdToUpdate, String newFName, String newLName, String newCourse, String newUsername, String newPassword) {
-        try {
-        	Bson filter = Filters.eq("Teacher_id", userIdToUpdate);
-        	
-        	Document updateTE = new Document("Teacher_id", userIdToUpdate)
-            		.append("title", newFName)
-            		.append("first_name", newLName)
-            		.append("last_name", newCourse)
-            		.append("course", newUsername)
-            		.append("username", newPassword);
-        	
-        	Document updatedTeacher = new Document ("$set",updateTE);
-        	TEusersCollection.updateOne(filter, updatedTeacher);
-        	
-//            Document filter = new Document("Teacher_id", userIdToUpdate);
-//            Document update = new Document();
-//            if (newFName != null && !newFName.isEmpty()) {
-//            	TEusersCollection.updateOne(Filters.eq("Teacher_id", userIdToUpdate), Updates.set("first_name", newFName));
-//            }
-//            if (newLName != null && !newLName.isEmpty()) {
-//                update.append("$set", new Document("last_name", newLName));
-//            }
-//            if (newCourse != null && !newCourse.isEmpty()) {
-//                update.append("$set", new Document("course", newCourse));
-//            }
-//            if (newUsername != null && !newUsername.isEmpty()) {
-//            	update.append("$set", new Document("course", newUsername));
-//            }
-//            if (newPassword != null && !newPassword.isEmpty()) {
-//                update.append("$set", new Document("password", newPassword));
-//            }
-//            if (!update.isEmpty()) {
-//            	TEusersCollection.updateOne(filter, update);
+        try {        	
+            Document filter = new Document("Teacher_ID", userIdToUpdate);
+            Document update = new Document();
+            if (newFName != null && !newFName.isEmpty()) {
+            	TEusersCollection.updateOne(Filters.eq("Teacher_ID", userIdToUpdate), Updates.set("first_name", newFName));
+            }
+            if (newLName != null && !newLName.isEmpty()) {
+                update.append("$set", new Document("last_name", newLName));
+            }
+            if (newCourse != null && !newCourse.isEmpty()) {
+                update.append("$set", new Document("course", newCourse));
+            }
+            if (newUsername != null && !newUsername.isEmpty()) {
+            	update.append("$set", new Document("course", newUsername));
+            }
+            if (newPassword != null && !newPassword.isEmpty()) {
+                update.append("$set", new Document("password", newPassword));
+            }
+            if (!update.isEmpty()) {
+            	TEusersCollection.updateOne(filter, update);
                 System.out.println("Teacher updated successfully!");
-//            } else {
+            } else {
                 System.out.println("No valid fields to update for the teacher.");
-            //}
+            }
         } catch (com.mongodb.MongoException e) {
             System.err.println("Error updating teacher in MongoDB: " + e.getMessage());
         }
@@ -262,6 +250,7 @@ class teacherDatabase {
         }
     }
 }
+
 
 public class tt_admin {
     public static void main(String[] args) {
