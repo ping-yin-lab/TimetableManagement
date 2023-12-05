@@ -13,7 +13,7 @@ import com.mongodb.client.model.Filters;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class student_management {
+public class Student_Management {
 
     public static void AddStudentSchedule(Student_Schedule ss) {
         Document userDocument = new Document("student id", ss.studentId)
@@ -121,96 +121,105 @@ public class student_management {
 
     public static void main(String[] args) {
 
-        Scanner reader = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        Menu: while (true) {
+            System.out.println("Welcome to Student System");
+            System.out.println("==========================");
+            System.out.println("Choose the menu below");
+            System.out.println("1. Student Schedule Management");
+            System.out.println("2. Send Message");
+            System.out.println("3. Send Request");
+            System.out.println("4. Quit");
+            System.out.print("Input : ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1:
+                    while (true) {
+                        System.out.println("Student Schedule Management");
+                        System.out.println("Your Schedule");
+                        System.out.println("==========================");
+                        displaySchedule();
+                        System.out.println("1. Add new Student Schedule");
+                        System.out.println("2. Update schedule");
+                        System.out.println("3. Delete schedule");
+                        System.out.println("4. Back to main menu");
+                        System.out.println("5. Quit");
+                        System.out.print("Input : ");
+                        int stScheChoice = scanner.nextInt();
+                        scanner.nextLine();
+                        switch (stScheChoice) {
+                            case 1:
+                                System.out.println("Enter Schedule title: ");
+                                String stitle = scanner.nextLine();
+                                System.out.println("==Input Starting time==");
+                                System.out.print("Enter Date in format yyyy-mm-dd :");
+                                String stdate = scanner.nextLine();
+                                System.out.print("Enter Starting time in format HH:mm :");
+                                String sttime = scanner.nextLine();
+                                LocalDateTime sdt = LocalDateTime.parse(stdate + "T" + sttime);
+                                System.out.println("Your startting time : " + sdt);
+                                System.out.println("==Input Ending time==");
+                                System.out.print("Enter Date in format yyyy-mm-dd :");
+                                String eddate = scanner.nextLine();
+                                System.out.print("Enter Ending time in format HH:mm :");
+                                String edtime = scanner.nextLine();
+                                LocalDateTime edt = LocalDateTime.parse(eddate + "T" + edtime);
+                                System.out.println("Your Ending time : " + edt);
+                                Student_Schedule sSche = new Student_Schedule(1, stitle, sdt, edt, "Student");
+                                AddStudentSchedule(sSche);
+                                break;
+                            case 2:
+                                System.out.println("Updating exist schedule");
+                                System.out.print("Enter Student Schedule title you want to change: ");
+                                String target = scanner.nextLine();
+                                Bson Updatefilter = Filters.eq("title", target);
 
-        System.out.println("Welcome to Student System");
-        System.out.println("==========================");
-        System.out.println("Choose the menu below");
-        System.out.println("1. Student Schedule Management");
-        System.out.println("2. Send Message");
-        System.out.println("3. Send Request");
-        System.out.print("Input : ");
-        String choice = reader.nextLine();
-        switch (choice) {
-            case "1":
-                int stScheChoice;
-                do {
-                    System.out.println("Student Schedule Management");
-                    System.out.println("Your Schedule");
-                    System.out.println("==========================");
-                    displaySchedule();
-                    System.out.println("1. Add new Student Schedule");
-                    System.out.println("2. Update schedule");
-                    System.out.println("3. Delete schedule");
-                    System.out.println("4. Back to main menu");
-                    System.out.println("5. Quit");
-                    System.out.print("Input : ");
-                    stScheChoice = Integer.parseInt(reader.nextLine());
-                    switch (stScheChoice) {
-                        case 1:
-                            System.out.println("Enter Schedule title: ");
-                            String stitle = reader.nextLine();
-                            System.out.println("==Input Starting time==");
-                            System.out.print("Enter Date in format yyyy-mm-dd :");
-                            String stdate = reader.nextLine();
-                            System.out.print("Enter Starting time in format HH:mm :");
-                            String sttime = reader.nextLine();
-                            LocalDateTime sdt = LocalDateTime.parse(stdate + "T" + sttime);
-                            System.out.println("Your startting time : " + sdt);
-                            System.out.println("==Input Ending time==");
-                            System.out.print("Enter Date in format yyyy-mm-dd :");
-                            String eddate = reader.nextLine();
-                            System.out.print("Enter Ending time in format HH:mm :");
-                            String edtime = reader.nextLine();
-                            LocalDateTime edt = LocalDateTime.parse(eddate + "T" + edtime);
-                            System.out.println("Your Ending time : " + edt);
-                            Student_Schedule sSche = new Student_Schedule(1, stitle, sdt, edt, "Student");
-                            AddStudentSchedule(sSche);
-                            break;
-                        case 2:
-                            System.out.println("Updating exist schedule");
-                            System.out.print("Enter Personal Schedule title you want to change: ");
-                            String target = reader.nextLine();
-                            Bson Updatefilter = Filters.eq("title", target);
+                                System.out.println("New Title : ");
+                                stitle = scanner.nextLine();
+                                System.out.println("==Input New Starting time==");
+                                System.out.print("Enter Date in format yyyy-mm-dd :");
+                                stdate = scanner.nextLine();
+                                System.out.print("Enter Starting time in format HH:mm :");
+                                sttime = scanner.nextLine();
+                                sdt = LocalDateTime.parse(stdate + "T" + sttime);
+                                System.out.println("==Input New Ending time==");
+                                System.out.print("Enter Date in format yyyy-mm-dd :");
+                                eddate = scanner.nextLine();
+                                System.out.print("Enter Ending time in format HH:mm :");
+                                edtime = scanner.nextLine();
+                                edt = LocalDateTime.parse(eddate + "T" + edtime);
+                                Student_Schedule Updatepsche = new Student_Schedule(1, stitle, sdt, edt, "Student");
+                                UpdateStudentSchedule(Updatepsche, Updatefilter);
 
-                            System.out.println("New Title : ");
-                            stitle = reader.nextLine();
-                            System.out.println("==Input New Starting time==");
-                            System.out.print("Enter Date in format yyyy-mm-dd :");
-                            stdate = reader.nextLine();
-                            System.out.print("Enter Starting time in format HH:mm :");
-                            sttime = reader.nextLine();
-                            sdt = LocalDateTime.parse(stdate + "T" + sttime);
-                            System.out.println("==Input New Ending time==");
-                            System.out.print("Enter Date in format yyyy-mm-dd :");
-                            eddate = reader.nextLine();
-                            System.out.print("Enter Ending time in format HH:mm :");
-                            edtime = reader.nextLine();
-                            edt = LocalDateTime.parse(eddate + "T" + edtime);
-                            Student_Schedule Updatepsche = new Student_Schedule(1, stitle, sdt, edt, "Student");
-                            UpdateStudentSchedule(Updatepsche, Updatefilter);
-
-                            break;
-                        case 3:
-                            displaySchedulewithID();
-                            System.out.println("Enter the title of which item you want to delete : ");
-                            String title = reader.nextLine();
-                            Bson filter = Filters.eq("title", title);
-                            Databases.STUDENT_SCHE_DATABASE().deleteOne(filter);
-                            System.out.println("Deletion successfully");
-                            break;
-                        case 4:
-                            break;
-                        default:
-                            break;
+                                break;
+                            case 3:
+                                displaySchedulewithID();
+                                System.out.println("Enter the title of which item you want to delete : ");
+                                String title = scanner.nextLine();
+                                Bson filter = Filters.eq("title", title);
+                                Databases.STUDENT_SCHE_DATABASE().deleteOne(filter);
+                                System.out.println("Deletion successfully");
+                                break;
+                            case 4:
+                                break;
+                            case 5:
+                                System.exit(0);
+                            default:
+                                break;
+                        }
+                        break;
                     }
-                } while (stScheChoice != 5);
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
 
-            case "2":
-                break;
-            case "3":
-                break;
+            }
         }
+
     }
 
 }

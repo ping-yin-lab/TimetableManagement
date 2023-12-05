@@ -9,8 +9,8 @@ public class Student_Schedule {
 	public LocalDateTime starttime;
 	public LocalDateTime endtime;
 	public String type;
-	
-	public Student_Schedule(int studentId,String name, LocalDateTime sttime, LocalDateTime edtime, String type) {
+
+	public Student_Schedule(int studentId, String name, LocalDateTime sttime, LocalDateTime edtime, String type) {
 		this.studentId = studentId;
 		this.schedulename = name;
 		this.starttime = sttime;
@@ -21,6 +21,7 @@ public class Student_Schedule {
 	public int getUserid() {
 		return studentId;
 	}
+
 	public String getSchedulename() {
 		return schedulename;
 	}
@@ -52,5 +53,5 @@ public class Student_Schedule {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
 }
