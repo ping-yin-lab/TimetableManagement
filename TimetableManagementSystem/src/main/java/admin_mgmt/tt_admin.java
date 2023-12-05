@@ -119,10 +119,9 @@ class studentDatabase {
     
     public void STUpdate(String studentId, String newFName, String newLName, String newCourse, String newUsername, String newPassword) {
         try {
-            Document filter = new Document("Student_id", studentId);
+            Document filter = new Document("Student_ID", studentId);
             Document update = new Document();
             if (newFName != null && !newFName.isEmpty()) {
-            	
                 Updates.set("first_name", newFName);
             }
             if (newLName != null && !newLName.isEmpty()) {
@@ -216,7 +215,7 @@ class teacherDatabase {
             Document filter = new Document("Teacher_ID", userIdToUpdate);
             Document update = new Document();
             if (newFName != null && !newFName.isEmpty()) {
-            	TEusersCollection.updateOne(Filters.eq("Teacher_ID", userIdToUpdate), Updates.set("first_name", newFName));
+            	update.append("$set", new Document("first_name", newFName));
             }
             if (newLName != null && !newLName.isEmpty()) {
                 update.append("$set", new Document("last_name", newLName));
