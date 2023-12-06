@@ -19,17 +19,119 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
 import teacher_personalmgnt.Personal_Schedule;
+
 class checkDateValidity {
 	public boolean checkdate(String date) {
-		if(date.length() > 10) {
+		if (date.length() > 10) {
 			return false;
 		}
-		if(!date.contains("-")) {
+		if (!date.contains("-")) {
 			return false;
 		}
 		return true;
 	}
 }
+
+class contact {
+	private String id;
+	public String name;
+	public String type;
+	public String email;
+	public String telephone;
+
+	public contact(String name, String type, String email, String telephone) {
+		this.name = name;
+		this.type = type;
+		this.email = email;
+		this.telephone = telephone;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+}
+
+class contactDatabase {
+	private MongoCollection<Document> ContactCollection;
+
+	public contactDatabase() {
+		String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
+		String databaseName = "Contact";
+		String collectionName = "Contactlist";
+
+		try {
+			ConnectionString connString = new ConnectionString(connectionString);
+			MongoClient mongoClient = MongoClients.create(connectionString);
+			MongoDatabase database = mongoClient.getDatabase(databaseName);
+			ContactCollection = database.getCollection(collectionName);
+			System.out.println("Connected Student Successfully");
+		} catch (Exception e) {
+			System.err.println("Error connecting: " + e.getMessage());
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	public void addContact(contact contactelement) {
+		Document userDocument = new Document("name", contactelement.getName())
+				.append("email", contactelement.getEmail())
+				.append("phone", contactelement.getTelephone())
+				.append("type", contactelement.getType());
+		ContactCollection.insertOne(userDocument);
+		System.out.println("Contact added successfully!");
+	}
+
+	public void displayContact() {
+		System.out.println("List of Contacts:");
+		ContactCollection.find().forEach(document -> System.out
+				.println("Name: " + document.get("name") + ", Email: " + document.get("email")
+						+ ", phone: " + document.get("phone")));
+	}
+
+	public void updateContact(contact updatecontactelement, Bson updatefilter) {
+		Document updatecon = new Document("name", updatecontactelement.getName())
+				.append("email", updatecontactelement.getEmail())
+				.append("phone", updatecontactelement.getTelephone())
+				.append("type", updatecontactelement.getType());
+		Bson updateop = new Document("$set", updatecon);
+		ContactCollection.updateOne(updatefilter, updateop);
+		System.out.println("Contact updated successfully!");
+	}
+
+	public void deleteexam(Bson filter) {
+		ContactCollection.deleteOne(filter);
+		System.out.println("Exam Deleted successfully!");
+	}
+}
+
 class studentUser {
 	private String id;
 	private String fname;
@@ -159,7 +261,7 @@ class scheduleDatabase {
 		System.out.println("Holiday Deleted successfully!");
 	}
 
-	//Custom_evenet_Managment
+	// Custom_evenet_Managment
 	public void displayCEvent() {
 		System.out.println("List of Custom Event:");
 		Bson filtering = Filters.eq("type", "Event");
@@ -390,13 +492,15 @@ public class tt_admin {
 		studentDatabase STdatabase = new studentDatabase();
 		teacherDatabase TEdatabase = new teacherDatabase();
 		scheduleDatabase SDDatabase = new scheduleDatabase();
+		contactDatabase CTDatabase = new contactDatabase();
 		while (true) {
 			System.out.println("1. Add Student");
 			System.out.println("2. Display Students");
 			System.out.println("3. Add Teacher");
 			System.out.println("4. Display Teachers");
 			System.out.println("5. Schedule Management");
-			System.out.println("6. Exit");
+			System.out.println("6. Contact Management");
+			System.out.println("7. Exit");
 
 			System.out.print("Enter your choice: ");
 
@@ -482,20 +586,21 @@ public class tt_admin {
 									System.out.println("==Input Starting time==");
 									System.out.print("Enter Date in format yyyy-mm-dd :");
 									stdate = scanner.nextLine();
-									if(dttester.checkdate(stdate)) {
-									System.out.print("Enter Starting time in format HH:mm :");
-									sttime = scanner.nextLine();
-									stdt = LocalDateTime.parse(stdate + "T" + sttime);
-									System.out.println("Your startting time : " + stdt);
-									System.out.println("==Input Ending time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									eddate = scanner.nextLine();
-									System.out.print("Enter Ending time in format HH:mm :");
-									edtime = scanner.nextLine();
-									eddt = LocalDateTime.parse(eddate + "T" + edtime);
-									System.out.println("Your Ending time : " + eddt);
-									Personal_Schedule examsche = new Personal_Schedule(1, stitle, stdt, eddt, "Exam");
-									SDDatabase.addExamSchedule(examsche);
+									if (dttester.checkdate(stdate)) {
+										System.out.print("Enter Starting time in format HH:mm :");
+										sttime = scanner.nextLine();
+										stdt = LocalDateTime.parse(stdate + "T" + sttime);
+										System.out.println("Your startting time : " + stdt);
+										System.out.println("==Input Ending time==");
+										System.out.print("Enter Date in format yyyy-mm-dd :");
+										eddate = scanner.nextLine();
+										System.out.print("Enter Ending time in format HH:mm :");
+										edtime = scanner.nextLine();
+										eddt = LocalDateTime.parse(eddate + "T" + edtime);
+										System.out.println("Your Ending time : " + eddt);
+										Personal_Schedule examsche = new Personal_Schedule(1, stitle, stdt, eddt,
+												"Exam");
+										SDDatabase.addExamSchedule(examsche);
 									} else {
 										System.out.println("Invalid date time input! Please follow the format");
 										break;
@@ -671,6 +776,57 @@ public class tt_admin {
 									System.out.println("Invalid input entered");
 							}
 					}
+				case 6:
+					System.out.println("==== Contact Management ====");
+					CTDatabase.displayContact();
+					System.out.println("1. Add new Contact");
+					System.out.println("2. Update Contact");
+					System.out.println("3. Delete Contact");
+					System.out.println("4. Back to main menu");
+					System.out.print("Input : ");
+					int contact_choice = Integer.parseInt(scanner.nextLine());
+					switch (contact_choice) {
+						case 1:
+							System.out.println("Enter Contact name: ");
+							String contactName = scanner.nextLine();
+
+							System.out.print("Enter your email :");
+							String conemail = scanner.nextLine();
+
+							System.out.print("Enter your phone :");
+							String conphone = scanner.nextLine();
+
+							contact contactelement = new contact(contactName, "Admin", conemail, conphone);
+							CTDatabase.addContact(contactelement);
+							break;
+						case 2:
+							System.out.println("Updating exist Contact");
+							System.out.print("Enter name you want to change: ");
+							String target = scanner.nextLine();
+							Bson Updatefilter = Filters.eq("name", target);
+
+							System.out.print("Enter your new email :");
+							conemail = scanner.nextLine();
+
+							System.out.print("Enter your new phone :");
+							conphone = scanner.nextLine();
+
+							contact updatecontactelement = new contact(target, "Admin", conemail, conphone);
+							CTDatabase.updateContact(updatecontactelement, Updatefilter);
+							break;
+						case 3:
+							System.out.println("Enter the name of which item you want to delete : ");
+							String name = scanner.nextLine();
+							Bson filter = Filters.eq("name", name);
+							SDDatabase.deleteCEvent(filter);
+							break;
+						case 4:
+							System.out.println("Returning back to main menu ..");
+							break;
+						default:
+							System.out.println("Invalid input entered");
+					}
+					break;
 			}
 		}
 	}
