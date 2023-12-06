@@ -374,7 +374,7 @@ class teacherDatabase {
 	public void TEUpdate(String userIdToUpdate, String newFName, String newLName, String newCourse, String newUsername,
 			String newPassword) {
 		try {
-			Bson filter = Filters.eq("Teacher_id", userIdToUpdate);
+			Bson filter = Filters.eq("Teacher_ID", userIdToUpdate);
 
 			Document updateTE = new Document("Teacher_id", userIdToUpdate).append("title", newFName)
 					.append("first_name", newLName).append("last_name", newCourse).append("course", newUsername)
