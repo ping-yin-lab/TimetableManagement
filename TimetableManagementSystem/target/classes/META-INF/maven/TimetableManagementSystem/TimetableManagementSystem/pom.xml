@@ -3,4 +3,12 @@
   <groupId>TimetableManagementSystem</groupId>
   <artifactId>TimetableManagementSystem</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+	 <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-sync</artifactId>
+        <version>4.2.3</version> <!-- Use the latest version -->
+   	</dependency>
+  </dependencies>
+  
 </project>
