@@ -27,11 +27,11 @@ import java.util.Scanner;
 //    }
 //}
 
-public class AdminLogin {
+public class TeacherLogin {
 
     private static MongoClient mongoClient;
     private static MongoDatabase database;
-    private static MongoCollection<Document> adminCollection;
+    private static MongoCollection<Document> teacherCollection;
 
     public static void main(String[] args) {
         try {
@@ -58,7 +58,7 @@ public class AdminLogin {
 
                     switch (choice) {
                         case 1:
-                            login(scanner, adminCollection);
+                            login(scanner, teacherCollection);
                             break;
                         case 2:
                             System.out.println("Exiting the Student module.");
@@ -68,7 +68,7 @@ public class AdminLogin {
                             System.out.println("Invalid option. Please choose a valid option.");
                     }
                 } else {
-                    System.out.println("Admin (Logged in as " + Session.getCurrentUser() + "):");
+                    System.out.println("Techer (Logged in as " + Session.getCurrentUser() + "):");
                     System.out.println("1. Perform Student Operations");
                     System.out.println("2. Logout");
 
@@ -106,9 +106,9 @@ public class AdminLogin {
             String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
             MongoClient mongoClient = MongoClients.create(connectionString);
                         
-            database = mongoClient.getDatabase("Users_Admin");
+            database = mongoClient.getDatabase("Users_Teacher");
            
-            adminCollection = database.getCollection("TT_Users");
+            teacherCollection = database.getCollection("TT_Users");
         } catch (Exception e) {
             System.err.println("Error initializing MongoDB: " + e.getMessage());
             System.exit(1);
@@ -138,7 +138,7 @@ public class AdminLogin {
 
     private static void performStudentOperations() {
         try {
-            System.out.println("Performing Student Operations...");
+            System.out.println("Perform Teacher Operations...");
             // Add your student-specific operations here
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during student operations: " + e.getMessage());
@@ -154,5 +154,3 @@ public class AdminLogin {
         }
     }
 }
-
-
