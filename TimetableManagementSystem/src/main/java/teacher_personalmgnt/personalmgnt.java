@@ -14,7 +14,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
 import java.time.LocalDateTime; 
-import java.time.format.DateTimeFormatter;
 
 public class personalmgnt {
 	private static MongoCollection<Document> scheduleCollection;
@@ -46,6 +45,13 @@ public class personalmgnt {
                 System.out.println("Title: " + document.get("title") + "\n Start time: " + document.get("start time")
                 + "\n End time: " + document.get("end time")+"\n==========================\n"));
     }
+	public static void displayTimeoff() {
+    	System.out.println("List of Timeoff:");
+		Bson filtering = Filters.eq("type", "TimeoffT");
+    	scheduleCollection.find(filtering).forEach(document ->
+                System.out.println("Title: " + document.get("title") + "\n Start time: " + document.get("start time")
+                + "\n End time: " + document.get("end time")+"\n==========================\n"));
+    }
 	
 	public static void displaySchedulewithID() {
 		System.out.println("List of Schedule:");
@@ -58,7 +64,6 @@ public class personalmgnt {
 		                + "\nStart time: " + document.get("start time")
 		                + "\nEnd time: " + document.get("end time")
 		                + "\n==========================\n"));
-    	
     }
 	
 	public static void main(String[] args) {
@@ -85,6 +90,7 @@ public class personalmgnt {
 		System.out.println("1. Personal Schedule Management");
 		System.out.println("2. Module Management");
 		System.out.println("3. Class Management");
+		System.out.println("4. Time off Management");
 		System.out.print("Input : ");
 		String choice = reader.nextLine();
 		switch(choice) {
@@ -166,6 +172,79 @@ public class personalmgnt {
 			break;
 		case "3":
 			break;
+		case "4":
+		int TimeOff;
+			do {
+			System.out.println("Time off Management");
+			System.out.println("Your Time off");
+			System.out.println("==========================");
+			displayTimeoff();
+			System.out.println("1. Add new Time off Schedule");
+			System.out.println("2. Update Time off schedule");
+			System.out.println("3. Delete Time off schedule");
+			System.out.println("4. Back to main menu");
+			System.out.print("Input : ");
+			TimeOff = Integer.parseInt(reader.nextLine());
+			switch(TimeOff) {
+			case 1:
+				System.out.println("Enter Time off title: ");
+				String stitle = reader.nextLine();
+				System.out.println("==Input Starting time==");
+				System.out.print("Enter Date in format yyyy-mm-dd :");
+				String stdate = reader.nextLine();
+				System.out.print("Enter Starting time in format HH:mm :");
+				String sttime = reader.nextLine();
+				LocalDateTime stdt = LocalDateTime.parse(stdate+"T"+sttime);
+				System.out.println("Your startting time : " + stdt);
+				System.out.println("==Input Ending time==");
+				System.out.print("Enter Date in format yyyy-mm-dd :");
+				String eddate = reader.nextLine();
+				System.out.print("Enter Ending time in format HH:mm :");
+				String edtime = reader.nextLine();
+				LocalDateTime eddt = LocalDateTime.parse(eddate+"T"+edtime);
+				System.out.println("Your Ending time : " + eddt);
+				Personal_Schedule psche = new Personal_Schedule(1,stitle, stdt,eddt, "TimeoffT");
+				addPersonalSchedule(psche);
+				break;
+			case 2:
+				System.out.println("Updating exist schedule");
+				System.out.print("Enter Personal Schedule title you want to change: ");
+				String target = reader.nextLine();
+				Bson Updatefilter = Filters.eq("title", target);
+				
+				System.out.println("New Title : ");
+				stitle = reader.nextLine();
+				System.out.println("==Input New Starting time==");
+				System.out.print("Enter Date in format yyyy-mm-dd :");
+				stdate = reader.nextLine();
+				System.out.print("Enter Starting time in format HH:mm :");
+				sttime = reader.nextLine();
+				stdt = LocalDateTime.parse(stdate+"T"+sttime);
+				System.out.println("==Input New Ending time==");
+				System.out.print("Enter Date in format yyyy-mm-dd :");
+				eddate = reader.nextLine();
+				System.out.print("Enter Ending time in format HH:mm :");
+				edtime = reader.nextLine();
+				eddt = LocalDateTime.parse(eddate+"T"+edtime);
+				Personal_Schedule Updatepsche = new Personal_Schedule(1,stitle, stdt,eddt, "PersonalT");
+				updatePersonalSchedule(Updatepsche, Updatefilter);
+				
+				break;
+			case 3:
+				displaySchedulewithID();
+				System.out.println("Enter the title of which item you want to delete : ");
+				String title = reader.nextLine();
+				Bson filter = Filters.eq("title", title);
+				scheduleCollection.deleteOne(filter);
+				System.out.println("Deletion successfully");
+				break;
+			case 4:
+				break;
+			default:
+				break;
+			}
+			}
+			while(TimeOff != 5);
 		}
 	}
 
