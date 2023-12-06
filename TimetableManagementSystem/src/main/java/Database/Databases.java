@@ -1,4 +1,4 @@
-package student_mgmt;
+package Database;
 
 import org.bson.Document;
 
