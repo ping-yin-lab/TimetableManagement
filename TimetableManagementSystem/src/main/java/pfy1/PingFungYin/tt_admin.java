@@ -1,14 +1,9 @@
-package admin_mgmt;
+package pfy1.PingFungYin;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import org.bson.Document;
-import org.bson.conversions.Bson;
-
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -74,7 +69,7 @@ class studentDatabase {
 	String collectionName = "TT_Users";
 
     try { 
-    	ConnectionString connString = new ConnectionString(connectionString); 
+    	//ConnectionString connString = new ConnectionString(connectionString); 
     	MongoClient mongoClient =MongoClients.create(connectionString); 
     	MongoDatabase database = mongoClient.getDatabase(databaseName); 
     	STusersCollection = database.getCollection(collectionName);
@@ -164,7 +159,7 @@ class teacherDatabase {
     	String collectionName = "TT_Users";
 
         try { 
-        	ConnectionString connString = new ConnectionString(connectionString); 
+        	//ConnectionString connString = new ConnectionString(connectionString); 
         	MongoClient mongoClient =MongoClients.create(connectionString); 
         	MongoDatabase database = mongoClient.getDatabase(databaseName); 
         	TEusersCollection = database.getCollection(collectionName);
@@ -280,7 +275,7 @@ class moduleDatabase {
     	String collectionName = "TT_modules";
 
         try { 
-        	ConnectionString connString = new ConnectionString(connectionString); 
+        	//ConnectionString connString = new ConnectionString(connectionString); 
         	MongoClient mongoClient =MongoClients.create(connectionString); 
         	MongoDatabase database = mongoClient.getDatabase(databaseName); 
         	moduleCollection = database.getCollection(collectionName);
@@ -315,12 +310,85 @@ class moduleDatabase {
     }
 }
 
+class LectureHall {
+	private String LHcode;
+	private String LHbuilding;
+    private int LHroom;
+    private int LHpeople;
+
+    public LectureHall(String LHcode, String LHbuilding, int LHroom, int LHpeople) {
+    	this.LHcode = LHcode;
+    	this.LHbuilding = LHbuilding;
+        this.LHroom = LHroom;
+        this.LHpeople = LHpeople;
+    }
+
+    public String getCode() {
+        return LHcode;
+    }
+    public String getBuilding() {
+        return LHbuilding;
+    }
+    public int getRoom() {
+        return LHroom;
+    }
+    public int getPeople() {
+        return LHpeople;
+    }
+}
+
+class lecturehallDatabase {
+	private MongoCollection<Document> moduleCollection;
+
+    public lecturehallDatabase() {
+    	String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
+    	String databaseName = "LectureHall"; 
+    	String collectionName = "TT_LectureHall";
+
+        try { 
+        	//ConnectionString connString = new ConnectionString(connectionString); 
+        	MongoClient mongoClient =MongoClients.create(connectionString); 
+        	MongoDatabase database = mongoClient.getDatabase(databaseName); 
+        	moduleCollection = database.getCollection(collectionName);
+    	    System.out.println("Connected Successfully"); 
+    	    }catch(Exception e) {
+    	    	System.err.println("Error connecting: "+ e.getMessage());
+    	    	e.printStackTrace(); System.exit(1); 
+    	    } 
+    }
+
+    public void addLH(LectureHall lecture) {
+    	if (lectureExists(lecture.getCode())) {
+            System.out.println("Error: Module already");
+            return;
+        }else {
+        Document userDocument = new Document("Hall_Code", lecture.getCode())
+        		.append("Building_Name", lecture.getBuilding())
+        		.append("Room_No", lecture.getRoom())
+        		.append("No_of_people", lecture.getPeople());
+
+        moduleCollection.insertOne(userDocument);
+        System.out.println("Class added successfully!");
+        }
+    }
+    
+    private boolean lectureExists(String code) {
+        return moduleCollection.countDocuments(
+                new Document("$or", List.of(
+                        new Document("Hall_Code", code)
+                ))
+        ) > 0;
+    }
+}
+
+
 public class tt_admin {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         studentDatabase STdatabase = new studentDatabase();
         teacherDatabase TEdatabase = new teacherDatabase();
-        moduleDatabase MDdatabase = new moduleDatabase();        
+        moduleDatabase MDdatabase = new moduleDatabase();       
+        lecturehallDatabase LHdatabase = new lecturehallDatabase();
 
         while (true) {
             System.out.println("1. Add Student");
@@ -331,7 +399,8 @@ public class tt_admin {
             System.out.println("6. Delete Teacher");
             System.out.println("7. Update User");
             System.out.println("8. Add Module");
-            System.out.println("9. Exit");
+            System.out.println("9. Add Lecture Hall");
+            System.out.println("10. Exit");
             System.out.print("Enter your choice: ");
             
             int choice = scanner.nextInt();
@@ -436,9 +505,23 @@ public class tt_admin {
                     break;
                     
                 case 9:
+                	System.out.print("Enter Class Code: ");
+                	String LHcode = scanner.nextLine();
+                	System.out.print("Enter Building Name: ");
+                    String LHbuilding = scanner.nextLine();
+                    System.out.print("Enter Room Number: ");
+                    int LHroom = scanner.nextInt();
+                    System.out.print("Enter maximum no. of people allowed in the class: ");
+                    int LHpeople = scanner.nextInt();
+                                
+                    LectureHall newHall = new LectureHall(LHcode, LHbuilding, LHroom, LHpeople);
+                    LHdatabase.addLH(newHall);
+                    break;
+                    
+                case 10:
                 	System.out.println("Exiting the admin panel. Goodbye!");
                     System.exit(0);
-           
+                    
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }

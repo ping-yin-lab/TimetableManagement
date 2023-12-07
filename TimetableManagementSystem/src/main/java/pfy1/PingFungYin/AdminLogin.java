@@ -1,4 +1,4 @@
-package admin_mgmt;
+package pfy1.PingFungYin;
 
 public class AdminLogin{
 	

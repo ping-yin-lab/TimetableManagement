@@ -1,4 +1,4 @@
-package admin_mgmt;
+package pfy1.PingFungYin;
 
 import static org.junit.jupiter.api.Assertions.*;
 
