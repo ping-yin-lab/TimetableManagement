@@ -20,14 +20,30 @@ import com.mongodb.client.model.Updates;
 import teacher_personalmgnt.Personal_Schedule;
 
 class checkDateValidity {
+
 	public boolean checkdate(String date) {
-		if (date.length() > 10) {
-			return false;
+		if (date.length() == 10) {
+			if (date.split("-").length == 3) {
+				return true;
+			}
 		}
-		if (!date.contains("-")) {
-			return false;
+		return false;
+	}
+
+	public boolean checktime(String time) {
+		if (time.length() == 5) {
+			if (time.split(":").length == 2) {
+				return true;
+			}
 		}
-		return true;
+		return false;
+	}
+
+	public boolean checkstartend(LocalDateTime start, LocalDateTime end) {
+		if (end.isAfter(start)) {
+			return true;
+		}
+		return false;
 	}
 }
 
@@ -101,8 +117,7 @@ class contactDatabase {
 
 	public void addContact(contact contactelement) {
 		Document userDocument = new Document("name", contactelement.getName())
-				.append("email", contactelement.getEmail())
-				.append("phone", contactelement.getTelephone())
+				.append("email", contactelement.getEmail()).append("phone", contactelement.getTelephone())
 				.append("type", contactelement.getType());
 		ContactCollection.insertOne(userDocument);
 		System.out.println("Contact added successfully!");
@@ -110,15 +125,13 @@ class contactDatabase {
 
 	public void displayContact() {
 		System.out.println("List of Contacts:");
-		ContactCollection.find().forEach(document -> System.out
-				.println("Name: " + document.get("name") + ", Email: " + document.get("email")
-						+ ", phone: " + document.get("phone")));
+		ContactCollection.find().forEach(document -> System.out.println("Name: " + document.get("name") + ", Email: "
+				+ document.get("email") + ", phone: " + document.get("phone")));
 	}
 
 	public void updateContact(contact updatecontactelement, Bson updatefilter) {
 		Document updatecon = new Document("name", updatecontactelement.getName())
-				.append("email", updatecontactelement.getEmail())
-				.append("phone", updatecontactelement.getTelephone())
+				.append("email", updatecontactelement.getEmail()).append("phone", updatecontactelement.getTelephone())
 				.append("type", updatecontactelement.getType());
 		Bson updateop = new Document("$set", updatecon);
 		ContactCollection.updateOne(updatefilter, updateop);
@@ -294,7 +307,7 @@ class scheduleDatabase {
 		System.out.println("Custom Event Deleted successfully!");
 	}
 
-	//personal Admin timetable
+	// personal Admin timetable
 	public void displayPersonalAdmin() {
 		System.out.println("List of Custom Event:");
 		Bson filtering = Filters.eq("type", "PersonalA");
@@ -541,399 +554,457 @@ public class tt_admin {
 			scanner.nextLine(); // Consume the newline character
 
 			switch (choice) {
+			case 1:
+				System.out.print("Enter StudentId: ");
+				String STid = scanner.nextLine();
+				System.out.print("Enter First Name: ");
+				String STfname = scanner.nextLine();
+				System.out.print("Enter Last Name: ");
+				String STlname = scanner.nextLine();
+				System.out.print("Enter Course: ");
+				String STcourse = scanner.nextLine();
+				System.out.print("Enter username: ");
+				String STusername = scanner.nextLine();
+				System.out.print("Enter password: ");
+				String STpassword = scanner.nextLine();
+
+				studentUser STnewUser = new studentUser(STid, STfname, STlname, STcourse, STusername, STpassword);
+				STdatabase.STaddUser(STnewUser);
+				break;
+
+			case 2:
+				STdatabase.displaySTUsers();
+				break;
+
+			case 3:
+				System.out.print("Enter Teacher Id: ");
+				String TEid = scanner.nextLine();
+				System.out.print("Enter First Name: ");
+				String TEfname = scanner.nextLine();
+				System.out.print("Enter Last Name: ");
+				String TElname = scanner.nextLine();
+				System.out.print("Enter Course: ");
+				String TEcourse = scanner.nextLine();
+				System.out.print("Enter username: ");
+				String TEusername = scanner.nextLine();
+				System.out.print("Enter password: ");
+				String TEpassword = scanner.nextLine();
+
+				teacherUser TEnewUser = new teacherUser(TEid, TEfname, TElname, TEcourse, TEusername, TEpassword);
+				TEdatabase.TEaddUser(TEnewUser);
+				break;
+
+			case 4:
+				TEdatabase.displayTEUsers();
+				break;
+			case 5:
+				System.out.println("Schedule Management System");
+				System.out.println("1. Class Schedule");
+				System.out.println("2. Exam Schedule");
+				System.out.println("3. Holiday Schedule");
+				System.out.println("4. Custom Event Schedule");
+				System.out.println("5. Personal Admin Schedule");
+				System.out.println("6. Exit to main menu");
+				System.out.println("Input : ");
+				int Schedule_choice = scanner.nextInt();
+				scanner.nextLine(); // Consume the newline character
+				String stdate;
+				String sttime;
+				String eddate;
+				String edtime;
+				LocalDateTime stdt;
+				LocalDateTime eddt;
+				switch (Schedule_choice) {
 				case 1:
-					System.out.print("Enter StudentId: ");
-					String STid = scanner.nextLine();
-					System.out.print("Enter First Name: ");
-					String STfname = scanner.nextLine();
-					System.out.print("Enter Last Name: ");
-					String STlname = scanner.nextLine();
-					System.out.print("Enter Course: ");
-					String STcourse = scanner.nextLine();
-					System.out.print("Enter username: ");
-					String STusername = scanner.nextLine();
-					System.out.print("Enter password: ");
-					String STpassword = scanner.nextLine();
-
-					studentUser STnewUser = new studentUser(STid, STfname, STlname, STcourse, STusername, STpassword);
-					STdatabase.STaddUser(STnewUser);
 					break;
-
 				case 2:
-					STdatabase.displaySTUsers();
-					break;
-
-				case 3:
-					System.out.print("Enter Teacher Id: ");
-					String TEid = scanner.nextLine();
-					System.out.print("Enter First Name: ");
-					String TEfname = scanner.nextLine();
-					System.out.print("Enter Last Name: ");
-					String TElname = scanner.nextLine();
-					System.out.print("Enter Course: ");
-					String TEcourse = scanner.nextLine();
-					System.out.print("Enter username: ");
-					String TEusername = scanner.nextLine();
-					System.out.print("Enter password: ");
-					String TEpassword = scanner.nextLine();
-
-					teacherUser TEnewUser = new teacherUser(TEid, TEfname, TElname, TEcourse, TEusername, TEpassword);
-					TEdatabase.TEaddUser(TEnewUser);
-					break;
-
-				case 4:
-					TEdatabase.displayTEUsers();
-					break;
-				case 5:
-					System.out.println("Schedule Management System");
-					System.out.println("1. Class Schedule");
-					System.out.println("2. Exam Schedule");
-					System.out.println("3. Holiday Schedule");
-					System.out.println("4. Custom Event Schedule");
-					System.out.println("5. Personal Admin Schedule");
-					System.out.println("6. Exit to main menu");
-					System.out.println("Input : ");
-					int Schedule_choice = scanner.nextInt();
-					scanner.nextLine(); // Consume the newline character
-					String stdate;
-					String sttime;
-					String eddate;
-					String edtime;
-					LocalDateTime stdt;
-					LocalDateTime eddt;
-					switch (Schedule_choice) {
-						case 1:
-							break;
-						case 2:
-							System.out.println("==== Exam Management ====");
-							SDDatabase.displayExam();
-							System.out.println("1. Add new Exam Schedule");
-							System.out.println("2. Update exam schedule");
-							System.out.println("3. Delete exam schedule");
-							System.out.println("4. Back to main menu");
-							System.out.print("Input : ");
-							int exam_choice = Integer.parseInt(scanner.nextLine());
-							switch (exam_choice) {
-								case 1:
-									System.out.println("Enter Exam Schedule title: ");
-									String stitle = scanner.nextLine();
-									System.out.println("==Input Starting time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									stdate = scanner.nextLine();
-									if (dttester.checkdate(stdate)) {
-										System.out.print("Enter Starting time in format HH:mm :");
-										sttime = scanner.nextLine();
-										stdt = LocalDateTime.parse(stdate + "T" + sttime);
-										System.out.println("Your startting time : " + stdt);
-										System.out.println("==Input Ending time==");
-										System.out.print("Enter Date in format yyyy-mm-dd :");
-										eddate = scanner.nextLine();
-										System.out.print("Enter Ending time in format HH:mm :");
-										edtime = scanner.nextLine();
-										eddt = LocalDateTime.parse(eddate + "T" + edtime);
-										System.out.println("Your Ending time : " + eddt);
-										Personal_Schedule examsche = new Personal_Schedule(1, stitle, stdt, eddt,
-												"Exam");
-										SDDatabase.addExamSchedule(examsche);
-									} else {
-										System.out.println("Invalid date time input! Please follow the format");
-										break;
-									}
-									break;
-								case 2:
-									System.out.println("Updating exist Exam");
-									System.out.print("Enter Exam title you want to change: ");
-									String target = scanner.nextLine();
-									Bson Updatefilter = Filters.eq("title", target);
-									System.out.println("New Exam Title : ");
-									stitle = scanner.nextLine();
-									System.out.println("==Input New Starting time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									stdate = scanner.nextLine();
-									System.out.print("Enter Starting time in format HH:mm :");
-									sttime = scanner.nextLine();
-									stdt = LocalDateTime.parse(stdate + "T" + sttime);
-									System.out.println("==Input New Ending time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									eddate = scanner.nextLine();
-									System.out.print("Enter Ending time in format HH:mm :");
-									edtime = scanner.nextLine();
-									eddt = LocalDateTime.parse(eddate + "T" + edtime);
-									Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt,
-											"Exam");
-									SDDatabase.updatePersonalSchedule(Updatepsche, Updatefilter);
-									break;
-								case 3:
-									System.out.println("Enter the title of which item you want to delete : ");
-									String title = scanner.nextLine();
-									Bson filter = Filters.eq("title", title);
-									SDDatabase.deleteexam(filter);
-									break;
-
-								case 4:
-									break;
-							}
-						case 3:
-							System.out.println("==== Holiday Management ====");
-							SDDatabase.displayHoliday();
-							System.out.println("1. Add new Holiday Schedule");
-							System.out.println("2. Update Holiday schedule");
-							System.out.println("3. Delete Holiday schedule");
-							System.out.println("4. Back to main menu");
-							System.out.print("Input : ");
-							int holi_choice = Integer.parseInt(scanner.nextLine());
-							switch (holi_choice) {
-								case 1:
-									System.out.println("Enter Holiday title: ");
-									String stitle = scanner.nextLine();
-									System.out.println("==Input Starting time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									stdate = scanner.nextLine();
-									System.out.print("Enter Starting time in format HH:mm :");
-									sttime = scanner.nextLine();
-									stdt = LocalDateTime.parse(stdate + "T" + sttime);
-									System.out.println("Your startting time : " + stdt);
-									System.out.println("==Input Ending time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									eddate = scanner.nextLine();
-									System.out.print("Enter Ending time in format HH:mm :");
-									edtime = scanner.nextLine();
-									eddt = LocalDateTime.parse(eddate + "T" + edtime);
-									System.out.println("Your Ending time : " + eddt);
-									Personal_Schedule holische = new Personal_Schedule(1, stitle, stdt, eddt,
-											"Holiday");
-									SDDatabase.addHoliday(holische);
-									break;
-								case 2:
-									System.out.println("Updating exist Holiday");
-									System.out.print("Enter Holiday title you want to change: ");
-									String target = scanner.nextLine();
-									Bson Updatefilter = Filters.eq("title", target);
-
-									System.out.println("New Holiday Title : ");
-									stitle = scanner.nextLine();
-									System.out.println("==Input New Starting time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									stdate = scanner.nextLine();
-									System.out.print("Enter Starting time in format HH:mm :");
-									sttime = scanner.nextLine();
-									stdt = LocalDateTime.parse(stdate + "T" + sttime);
-									System.out.println("==Input New Ending time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									eddate = scanner.nextLine();
-									System.out.print("Enter Ending time in format HH:mm :");
-									edtime = scanner.nextLine();
-									eddt = LocalDateTime.parse(eddate + "T" + edtime);
-									Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt,
-											"Holiday");
-									SDDatabase.updateHoliday(Updatepsche, Updatefilter);
-									break;
-								case 3:
-									System.out.println("Enter the title of which item you want to delete : ");
-									String title = scanner.nextLine();
-									Bson filter = Filters.eq("title", title);
-									SDDatabase.deleteHoliday(filter);
-									break;
-
-								case 4:
-									break;
-								case 6:
-									System.out.println("Exiting the admin panel. Goodbye!");
-									System.exit(0);
-
-								default:
-									System.out.println("Invalid choice. Please enter a valid option.");
-							}
-						case 4:
-							System.out.println("==== Customer Event Management ====");
-							SDDatabase.displayCEvent();
-							System.out.println("1. Add new Event Schedule");
-							System.out.println("2. Update Event schedule");
-							System.out.println("3. Delete Event schedule");
-							System.out.println("4. Back to main menu");
-							System.out.print("Input : ");
-							int event_choice = Integer.parseInt(scanner.nextLine());
-							switch (event_choice) {
-								case 1:
-									System.out.println("Enter Event title: ");
-									String stitle = scanner.nextLine();
-									System.out.println("==Input Starting time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									stdate = scanner.nextLine();
-									System.out.print("Enter Starting time in format HH:mm :");
-									sttime = scanner.nextLine();
-									stdt = LocalDateTime.parse(stdate + "T" + sttime);
-									System.out.println("==Input Ending time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									eddate = scanner.nextLine();
-									System.out.print("Enter Ending time in format HH:mm :");
-									edtime = scanner.nextLine();
-									eddt = LocalDateTime.parse(eddate + "T" + edtime);
-									System.out.println("Your Ending time : " + eddt);
-									Personal_Schedule holische = new Personal_Schedule(1, stitle, stdt, eddt, "Event");
-									SDDatabase.addCEvent(holische);
-									break;
-								case 2:
-									System.out.println("Updating exist Event");
-									System.out.print("Enter Event title you want to change: ");
-									String target = scanner.nextLine();
-									Bson Updatefilter = Filters.eq("title", target);
-
-									System.out.println("New Event Title : ");
-									stitle = scanner.nextLine();
-									System.out.println("==Input New Starting time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									stdate = scanner.nextLine();
-									System.out.print("Enter Starting time in format HH:mm :");
-									sttime = scanner.nextLine();
-									stdt = LocalDateTime.parse(stdate + "T" + sttime);
-									System.out.println("==Input New Ending time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									eddate = scanner.nextLine();
-									System.out.print("Enter Ending time in format HH:mm :");
-									edtime = scanner.nextLine();
-									eddt = LocalDateTime.parse(eddate + "T" + edtime);
-									Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt,
-											"Event");
-									SDDatabase.updateCEvent(Updatepsche, Updatefilter);
-									break;
-								case 3:
-									System.out.println("Enter the title of which item you want to delete : ");
-									String title = scanner.nextLine();
-									Bson filter = Filters.eq("title", title);
-									SDDatabase.deleteCEvent(filter);
-									break;
-								case 4:
-									System.out.println("Returning back to main menu ..");
-									break;
-								default:
-									System.out.println("Invalid input entered");
-							}
-						case 5:
-							System.out.println("==== Personal Admin Schedule ====");
-							SDDatabase.displayPersonalAdmin();
-							System.out.println("1. Add new admin Schedule");
-							System.out.println("2. Update admin schedule");
-							System.out.println("3. Delete admin schedule");
-							System.out.println("4. Back to main menu");
-							System.out.print("Input : ");
-							int adminsche_choice = Integer.parseInt(scanner.nextLine());
-							switch (adminsche_choice) {
-								case 1:
-									System.out.println("Enter Schedule title: ");
-									String stitle = scanner.nextLine();
-									System.out.println("==Input Starting time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									stdate = scanner.nextLine();
-									System.out.print("Enter Starting time in format HH:mm :");
-									sttime = scanner.nextLine();
-									stdt = LocalDateTime.parse(stdate + "T" + sttime);
-									System.out.println("==Input Ending time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									eddate = scanner.nextLine();
-									System.out.print("Enter Ending time in format HH:mm :");
-									edtime = scanner.nextLine();
-									eddt = LocalDateTime.parse(eddate + "T" + edtime);
-									Personal_Schedule persoanladmin = new Personal_Schedule(1, stitle, stdt, eddt, "PersonalA");
-									SDDatabase.addPersoanlAdmin(persoanladmin);
-									break;
-								case 2:
-									System.out.println("Updating exist Personal Admin");
-									System.out.print("Enter title you want to change: ");
-									String target = scanner.nextLine();
-									Bson Updatefilter = Filters.eq("title", target);
-
-									System.out.println("New Event Title : ");
-									stitle = scanner.nextLine();
-									System.out.println("==Input New Starting time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									stdate = scanner.nextLine();
-									System.out.print("Enter Starting time in format HH:mm :");
-									sttime = scanner.nextLine();
-									stdt = LocalDateTime.parse(stdate + "T" + sttime);
-									System.out.println("==Input New Ending time==");
-									System.out.print("Enter Date in format yyyy-mm-dd :");
-									eddate = scanner.nextLine();
-									System.out.print("Enter Ending time in format HH:mm :");
-									edtime = scanner.nextLine();
-									eddt = LocalDateTime.parse(eddate + "T" + edtime);
-									Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt,
-											"Event");
-									SDDatabase.updatePersonalAdmin(Updatepsche, Updatefilter);
-									break;
-								case 3:
-									System.out.println("Enter the title of which item you want to delete : ");
-									String title = scanner.nextLine();
-									Bson filter = Filters.eq("title", title);
-									SDDatabase.deletePersonalAdmin(filter);
-									break;
-								case 4:
-									System.out.println("Returning back to main menu ..");
-									break;
-								default:
-									System.out.println("Invalid input entered");
-									break;
-							}
-							break;
-						case 6:
-							System.out.println("Returning to main menu");
-							break;
-						default:
-							System.out.println("Invalid Input!");
-							break;
-					}
-				case 6:
-					System.out.println("==== Contact Management ====");
-					CTDatabase.displayContact();
-					System.out.println("1. Add new Contact");
-					System.out.println("2. Update Contact");
-					System.out.println("3. Delete Contact");
+					System.out.println("==== Exam Management ====");
+					SDDatabase.displayExam();
+					System.out.println("1. Add new Exam Schedule");
+					System.out.println("2. Update exam schedule");
+					System.out.println("3. Delete exam schedule");
 					System.out.println("4. Back to main menu");
 					System.out.print("Input : ");
-					int contact_choice = Integer.parseInt(scanner.nextLine());
-					switch (contact_choice) {
-						case 1:
-							System.out.println("Enter Contact name: ");
-							String contactName = scanner.nextLine();
+					int exam_choice = Integer.parseInt(scanner.nextLine());
+					switch (exam_choice) {
+					case 1:
+						System.out.println("Enter Exam Schedule title: ");
+						String stitle = scanner.nextLine();
+						System.out.println("==Input Starting time==");
+						System.out.print("Enter Date in format yyyy-mm-dd :");
+						stdate = scanner.nextLine();
+						System.out.print("Enter Starting time in format HH:mm :");
+						sttime = scanner.nextLine();
+						if (dttester.checkdate(stdate) && dttester.checktime(sttime)) {
+							stdt = LocalDateTime.parse(stdate + "T" + sttime);
+							System.out.println("==Input Ending time==");
+							System.out.print("Enter Date in format yyyy-mm-dd :");
+							eddate = scanner.nextLine();
+							System.out.print("Enter Ending time in format HH:mm :");
+							edtime = scanner.nextLine();
+							eddt = LocalDateTime.parse(eddate + "T" + edtime);
+							if (dttester.checkdate(eddate) && dttester.checktime(edtime)
+									&& dttester.checkstartend(stdt, eddt)) {
+								Personal_Schedule examsche = new Personal_Schedule(1, stitle, stdt, eddt, "Exam");
+								SDDatabase.addExamSchedule(examsche);
+								break;
+							} else {
+								System.out.println("Invalid ! Your ending date ends before starting date!");
+							}
+						}
+						System.out.println("Invalid date time input! Please follow the format");
+						break;
+					case 2:
+						System.out.println("Updating exist Exam");
+						System.out.print("Enter Exam title you want to change: ");
+						String target = scanner.nextLine();
+						Bson Updatefilter = Filters.eq("title", target);
+						System.out.println("New Exam Title : ");
+						stitle = scanner.nextLine();
+						System.out.println("==Input New Starting time==");
+						System.out.print("Enter Date in format yyyy-mm-dd :");
+						stdate = scanner.nextLine();
+						System.out.print("Enter Starting time in format HH:mm :");
+						sttime = scanner.nextLine();
+						if (dttester.checkdate(stdate) && dttester.checktime(sttime)) {
+							stdt = LocalDateTime.parse(stdate + "T" + sttime);
+							System.out.println("==Input New Ending time==");
+							System.out.print("Enter Date in format yyyy-mm-dd :");
+							eddate = scanner.nextLine();
+							System.out.print("Enter Ending time in format HH:mm :");
+							edtime = scanner.nextLine();
+							eddt = LocalDateTime.parse(eddate + "T" + edtime);
+							if (dttester.checkdate(eddate) && dttester.checktime(edtime)
+									&& dttester.checkstartend(stdt, eddt)) {
+								Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt, "Exam");
+								SDDatabase.updatePersonalSchedule(Updatepsche, Updatefilter);
+							} else {
+								System.out.println("Invalid ! Your ending date ends before starting date!");
+								break;
+							}
+						}
+						System.out.println("Invalid date time input! Please follow the format");
+						break;
+					case 3:
+						System.out.println("Enter the title of which item you want to delete : ");
+						String title = scanner.nextLine();
+						Bson filter = Filters.eq("title", title);
+						SDDatabase.deleteexam(filter);
+						break;
 
-							System.out.print("Enter your email :");
-							String conemail = scanner.nextLine();
-
-							System.out.print("Enter your phone :");
-							String conphone = scanner.nextLine();
-
-							contact contactelement = new contact(contactName, "Admin", conemail, conphone);
-							CTDatabase.addContact(contactelement);
-							break;
-						case 2:
-							System.out.println("Updating exist Contact");
-							System.out.print("Enter name you want to change: ");
-							String target = scanner.nextLine();
-							Bson Updatefilter = Filters.eq("name", target);
-
-							System.out.print("Enter your new email :");
-							conemail = scanner.nextLine();
-
-							System.out.print("Enter your new phone :");
-							conphone = scanner.nextLine();
-
-							contact updatecontactelement = new contact(target, "Admin", conemail, conphone);
-							CTDatabase.updateContact(updatecontactelement, Updatefilter);
-							break;
-						case 3:
-							System.out.println("Enter the name of which item you want to delete : ");
-							String name = scanner.nextLine();
-							Bson filter = Filters.eq("name", name);
-							SDDatabase.deleteCEvent(filter);
-							break;
-						case 4:
-							System.out.println("Returning back to main menu ..");
-							break;
-						default:
-							System.out.println("Invalid input entered");
-							break;
+					case 4:
+						System.out.println("Returning to main menu ...");
+						break;
 					}
 					break;
+				case 3:
+					System.out.println("==== Holiday Management ====");
+					SDDatabase.displayHoliday();
+					System.out.println("1. Add new Holiday Schedule");
+					System.out.println("2. Update Holiday schedule");
+					System.out.println("3. Delete Holiday schedule");
+					System.out.println("4. Back to main menu");
+					System.out.print("Input : ");
+					int holi_choice = Integer.parseInt(scanner.nextLine());
+					switch (holi_choice) {
+					case 1:
+						System.out.println("Enter Holiday title: ");
+						String stitle = scanner.nextLine();
+						System.out.println("==Input Starting time==");
+						System.out.print("Enter Date in format yyyy-mm-dd :");
+						stdate = scanner.nextLine();
+						System.out.print("Enter Starting time in format HH:mm :");
+						sttime = scanner.nextLine();
+						if (dttester.checkdate(stdate) && dttester.checktime(sttime)) {
+							stdt = LocalDateTime.parse(stdate + "T" + sttime);
+							System.out.println("==Input Ending time==");
+							System.out.print("Enter Date in format yyyy-mm-dd :");
+							eddate = scanner.nextLine();
+							System.out.print("Enter Ending time in format HH:mm :");
+							edtime = scanner.nextLine();
+							eddt = LocalDateTime.parse(eddate + "T" + edtime);
+							if (dttester.checkdate(eddate) && dttester.checktime(edtime)
+									&& dttester.checkstartend(stdt, eddt)) {
+								Personal_Schedule holische = new Personal_Schedule(1, stitle, stdt, eddt, "Holiday");
+								SDDatabase.addHoliday(holische);
+							} else {
+								System.out.println("Invalid ! Your ending date ends before starting date!");
+								break;
+							}
+						}
+						System.out.println("Invalid date time input! Please follow the format");
+						break;
+					case 2:
+						System.out.println("Updating exist Holiday");
+						System.out.print("Enter Holiday title you want to change: ");
+						String target = scanner.nextLine();
+						Bson Updatefilter = Filters.eq("title", target);
+						System.out.println("New Holiday Title : ");
+						stitle = scanner.nextLine();
+						System.out.println("==Input New Starting time==");
+						System.out.print("Enter Date in format yyyy-mm-dd :");
+						stdate = scanner.nextLine();
+						System.out.print("Enter Starting time in format HH:mm :");
+						sttime = scanner.nextLine();
+						if (dttester.checkdate(stdate) && dttester.checktime(sttime)) {
+							stdt = LocalDateTime.parse(stdate + "T" + sttime);
+							System.out.println("==Input New Ending time==");
+							System.out.print("Enter Date in format yyyy-mm-dd :");
+							eddate = scanner.nextLine();
+							System.out.print("Enter Ending time in format HH:mm :");
+							edtime = scanner.nextLine();
+							eddt = LocalDateTime.parse(eddate + "T" + edtime);
+							if (dttester.checkdate(eddate) && dttester.checktime(edtime)
+									&& dttester.checkstartend(stdt, eddt)) {
+								Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt, "Holiday");
+								SDDatabase.updateHoliday(Updatepsche, Updatefilter);
+							} else {
+								System.out.println("Invalid ! Your ending date ends before starting date!");
+								break;
+							}
+						}
+						System.out.println("Invalid date time input! Please follow the format");
+						break;
+					case 3:
+						System.out.println("Enter the title of which item you want to delete : ");
+						String title = scanner.nextLine();
+						Bson filter = Filters.eq("title", title);
+						SDDatabase.deleteHoliday(filter);
+						break;
+					case 4:
+						break;
+					}
+					break;
+				case 4:
+					System.out.println("==== Customer Event Management ====");
+					SDDatabase.displayCEvent();
+					System.out.println("1. Add new Event Schedule");
+					System.out.println("2. Update Event schedule");
+					System.out.println("3. Delete Event schedule");
+					System.out.println("4. Back to main menu");
+					System.out.print("Input : ");
+					int event_choice = Integer.parseInt(scanner.nextLine());
+					switch (event_choice) {
+					case 1:
+						System.out.println("Enter Event title: ");
+						String stitle = scanner.nextLine();
+						System.out.println("==Input Starting time==");
+						System.out.print("Enter Date in format yyyy-mm-dd :");
+						stdate = scanner.nextLine();
+						System.out.print("Enter Starting time in format HH:mm :");
+						sttime = scanner.nextLine();
+						if (dttester.checkdate(stdate) && dttester.checktime(sttime)) {
+							stdt = LocalDateTime.parse(stdate + "T" + sttime);
+							System.out.println("==Input Ending time==");
+							System.out.print("Enter Date in format yyyy-mm-dd :");
+							eddate = scanner.nextLine();
+							System.out.print("Enter Ending time in format HH:mm :");
+							edtime = scanner.nextLine();
+							eddt = LocalDateTime.parse(eddate + "T" + edtime);
+							if (dttester.checkdate(eddate) && dttester.checktime(edtime)
+									&& dttester.checkstartend(stdt, eddt)) {
+								System.out.println("Your Ending time : " + eddt);
+								Personal_Schedule holische = new Personal_Schedule(1, stitle, stdt, eddt, "Event");
+								SDDatabase.addCEvent(holische);
+							} else {
+								System.out.println("Invalid ! Your ending date ends before starting date!");
+								break;
+							}
+						}
+						System.out.println("Invalid date time input! Please follow the format");
+						break;
+					case 2:
+						System.out.println("Updating exist Event");
+						System.out.print("Enter Event title you want to change: ");
+						String target = scanner.nextLine();
+						Bson Updatefilter = Filters.eq("title", target);
+						System.out.println("New Event Title : ");
+						stitle = scanner.nextLine();
+						System.out.println("==Input New Starting time==");
+						System.out.print("Enter Date in format yyyy-mm-dd :");
+						stdate = scanner.nextLine();
+						System.out.print("Enter Starting time in format HH:mm :");
+						sttime = scanner.nextLine();
+						if (dttester.checkdate(stdate) && dttester.checktime(sttime)) {
+							stdt = LocalDateTime.parse(stdate + "T" + sttime);
+							System.out.println("==Input New Ending time==");
+							System.out.print("Enter Date in format yyyy-mm-dd :");
+							eddate = scanner.nextLine();
+							System.out.print("Enter Ending time in format HH:mm :");
+							edtime = scanner.nextLine();
+							eddt = LocalDateTime.parse(eddate + "T" + edtime);
+							if (dttester.checkdate(eddate) && dttester.checktime(edtime)
+									&& dttester.checkstartend(stdt, eddt)) {
+								Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt, "Event");
+								SDDatabase.updateCEvent(Updatepsche, Updatefilter);
+							} else {
+								System.out.println("Invalid ! Your ending date ends before starting date!");
+								break;
+							}
+						}
+						System.out.println("Invalid date time input! Please follow the format");
+						break;
+					case 3:
+						System.out.println("Enter the title of which item you want to delete : ");
+						String title = scanner.nextLine();
+						Bson filter = Filters.eq("title", title);
+						SDDatabase.deleteCEvent(filter);
+						break;
+					case 4:
+						System.out.println("Returning back to main menu ..");
+						break;
+					default:
+						System.out.println("Invalid input entered");
+					}
+					break;
+				case 5:
+					System.out.println("==== Personal Admin Schedule ====");
+					SDDatabase.displayPersonalAdmin();
+					System.out.println("1. Add new admin Schedule");
+					System.out.println("2. Update admin schedule");
+					System.out.println("3. Delete admin schedule");
+					System.out.println("4. Back to main menu");
+					System.out.print("Input : ");
+					int adminsche_choice = Integer.parseInt(scanner.nextLine());
+					switch (adminsche_choice) {
+					case 1:
+						System.out.println("Enter Schedule title: ");
+						String stitle = scanner.nextLine();
+						System.out.println("==Input Starting time==");
+						System.out.print("Enter Date in format yyyy-mm-dd :");
+						stdate = scanner.nextLine();
+						System.out.print("Enter Starting time in format HH:mm :");
+						sttime = scanner.nextLine();
+						if (dttester.checkdate(stdate) && dttester.checktime(sttime)) {
+							stdt = LocalDateTime.parse(stdate + "T" + sttime);
+							System.out.println("==Input Ending time==");
+							System.out.print("Enter Date in format yyyy-mm-dd :");
+							eddate = scanner.nextLine();
+							System.out.print("Enter Ending time in format HH:mm :");
+							edtime = scanner.nextLine();
+							eddt = LocalDateTime.parse(eddate + "T" + edtime);
+							if (dttester.checkdate(eddate) && dttester.checktime(edtime)
+									&& dttester.checkstartend(stdt, eddt)) {
+								Personal_Schedule persoanladmin = new Personal_Schedule(1, stitle, stdt, eddt,
+										"PersonalA");
+								SDDatabase.addPersoanlAdmin(persoanladmin);
+							} else {
+								System.out.println("Invalid ! Your ending date ends before starting date!");
+								break;
+							}
+						}
+						System.out.println("Invalid date time input! Please follow the format");
+						break;
+					case 2:
+						System.out.println("Updating exist Personal Admin");
+						System.out.print("Enter title you want to change: ");
+						String target = scanner.nextLine();
+						Bson Updatefilter = Filters.eq("title", target);
+						System.out.println("New Event Title : ");
+						stitle = scanner.nextLine();
+						System.out.println("==Input New Starting time==");
+						System.out.print("Enter Date in format yyyy-mm-dd :");
+						stdate = scanner.nextLine();
+						System.out.print("Enter Starting time in format HH:mm :");
+						sttime = scanner.nextLine();
+						if (dttester.checkdate(stdate) && dttester.checktime(sttime)) {
+							stdt = LocalDateTime.parse(stdate + "T" + sttime);
+							System.out.println("==Input New Ending time==");
+							System.out.print("Enter Date in format yyyy-mm-dd :");
+							eddate = scanner.nextLine();
+							System.out.print("Enter Ending time in format HH:mm :");
+							edtime = scanner.nextLine();
+							eddt = LocalDateTime.parse(eddate + "T" + edtime);
+							if (dttester.checkdate(eddate) && dttester.checktime(edtime)
+									&& dttester.checkstartend(stdt, eddt)) {
+								Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt, "Event");
+								SDDatabase.updatePersonalAdmin(Updatepsche, Updatefilter);
+							} else {
+								System.out.println("Invalid ! Your ending date ends before starting date!");
+								break;
+							}
+						}
+						System.out.println("Invalid date time input! Please follow the format");
+						break;
+					case 3:
+						System.out.println("Enter the title of which item you want to delete : ");
+						String title = scanner.nextLine();
+						Bson filter = Filters.eq("title", title);
+						SDDatabase.deletePersonalAdmin(filter);
+						break;
+					case 4:
+						System.out.println("Returning back to main menu ..");
+						break;
+					default:
+						System.out.println("Invalid input entered");
+						break;
+					}
+					break;
+				case 6:
+					System.out.println("Returning to main menu");
+					break;
+				default:
+					System.out.println("Invalid Input!");
+					break;
+				}
+				break;
+			case 6:
+				System.out.println("==== Contact Management ====");
+				CTDatabase.displayContact();
+				System.out.println("1. Add new Contact");
+				System.out.println("2. Update Contact");
+				System.out.println("3. Delete Contact");
+				System.out.println("4. Back to main menu");
+				System.out.print("Input : ");
+				int contact_choice = Integer.parseInt(scanner.nextLine());
+				switch (contact_choice) {
+				case 1:
+					System.out.println("Enter Contact name: ");
+					String contactName = scanner.nextLine();
+
+					System.out.print("Enter your email :");
+					String conemail = scanner.nextLine();
+
+					System.out.print("Enter your phone :");
+					String conphone = scanner.nextLine();
+
+					contact contactelement = new contact(contactName, "Admin", conemail, conphone);
+					CTDatabase.addContact(contactelement);
+					break;
+				case 2:
+					System.out.println("Updating exist Contact");
+					System.out.print("Enter name you want to change: ");
+					String target = scanner.nextLine();
+					Bson Updatefilter = Filters.eq("name", target);
+
+					System.out.print("Enter your new email :");
+					conemail = scanner.nextLine();
+
+					System.out.print("Enter your new phone :");
+					conphone = scanner.nextLine();
+
+					contact updatecontactelement = new contact(target, "Admin", conemail, conphone);
+					CTDatabase.updateContact(updatecontactelement, Updatefilter);
+					break;
+				case 3:
+					System.out.println("Enter the name of which item you want to delete : ");
+					String name = scanner.nextLine();
+					Bson filter = Filters.eq("name", name);
+					SDDatabase.deleteCEvent(filter);
+					break;
+				case 4:
+					System.out.println("Returning back to main menu ..");
+					break;
+				default:
+					System.out.println("Invalid input entered");
+					break;
+				}
+				break;
+			case 7:
+				System.out.println("Exiting the admin panel. Goodbye!");
+				System.exit(0);
+			default:
+				System.out.println("Invalid choice. Please enter a valid option.");
 			}
 		}
 	}
