@@ -64,7 +64,8 @@ class teacherUser extends User{
 		super(id, fname, lname, course, username, password);
 	}
 }
-	
+
+
 class studentDatabase { 
 	private MongoCollection<Document> STusersCollection;
 	public studentDatabase() { 
@@ -105,7 +106,7 @@ class studentDatabase {
         return STusersCollection.countDocuments(
                 new Document("$or", List.of(
                         new Document("username", username),
-                        new Document("id", id)
+                        new Document("Student_ID", id)
                 ))
         ) > 0;
     }
@@ -119,44 +120,40 @@ class studentDatabase {
     
     public void STUpdate(String studentId, String newFName, String newLName, String newCourse, String newUsername, String newPassword) {
         try {
-            Document filter = new Document("Student_ID", studentId);
-            Document update = new Document();
             if (newFName != null && !newFName.isEmpty()) {
-                Updates.set("first_name", newFName);
+            	STusersCollection.updateOne(Filters.eq("Student_ID", studentId), Updates.set("first_name", newFName));
             }
             if (newLName != null && !newLName.isEmpty()) {
-                update.append("$set", new Document("last_name", newLName));
+            	STusersCollection.updateOne(Filters.eq("Student_ID", studentId), Updates.set("last_name", newLName));
             }
             if (newCourse != null && !newCourse.isEmpty()) {
-                update.append("$set", new Document("name", newCourse));
+            	STusersCollection.updateOne(Filters.eq("Student_ID", studentId), Updates.set("course", newCourse));
             }
             if (newUsername != null && !newUsername.isEmpty()) {
-                update.append("$set", new Document("username", newUsername));
+            	STusersCollection.updateOne(Filters.eq("Student_ID", studentId), Updates.set("username", newUsername));
             }
             if (newPassword != null && !newPassword.isEmpty()) {
-                update.append("$set", new Document("password", newPassword));
+            	STusersCollection.updateOne(Filters.eq("Student_ID", studentId), Updates.set("password", newPassword));
             }
-            if (!update.isEmpty()) {
-            	STusersCollection.updateOne(filter, update);
+            if (!newFName.isEmpty() || !newLName.isEmpty() || !newCourse.isEmpty() || !newUsername.isEmpty() || !newPassword.isEmpty() ) {
                 System.out.println("Student updated successfully!");
             } else {
-                System.out.println("No valid fields to update for the student.");
+                System.out.println("No valid fields to update for the teacher.");
             }
         } catch (com.mongodb.MongoException e) {
             System.err.println("Error updating student in MongoDB: " + e.getMessage());
         }
     }
     
-    public void deleteSTuser(String teacherId) {
+    public void deleteSTuser(String studentId) {
         try {
-        	STusersCollection.deleteOne(new Document("Student_ID", teacherId));
+        	STusersCollection.deleteOne(new Document("Student_ID", studentId));
             System.out.println("Student deleted successfully!");
         } catch (com.mongodb.MongoException e) {
             System.err.println("Error deleting student: " + e.getMessage());
         }
     }
 }
-
 
 class teacherDatabase {
 	private MongoCollection<Document> TEusersCollection;
@@ -199,7 +196,7 @@ class teacherDatabase {
         return TEusersCollection.countDocuments(
                 new Document("$or", List.of(
                         new Document("username", username),
-                        new Document("id", id)
+                        new Document("Teacher_ID", id)
                 ))
         ) > 0;
     }
@@ -212,25 +209,22 @@ class teacherDatabase {
     
     public void TEUpdate(String userIdToUpdate, String newFName, String newLName, String newCourse, String newUsername, String newPassword) {
         try {        	
-            Document filter = new Document("Teacher_ID", userIdToUpdate);
-            Document update = new Document();
             if (newFName != null && !newFName.isEmpty()) {
-            	update.append("$set", new Document("first_name", newFName));
+            	TEusersCollection.updateOne(Filters.eq("Teacher_ID", userIdToUpdate), Updates.set("first_name", newFName));
             }
             if (newLName != null && !newLName.isEmpty()) {
-                update.append("$set", new Document("last_name", newLName));
+            	TEusersCollection.updateOne(Filters.eq("Teacher_ID", userIdToUpdate), Updates.set("last_name", newLName));
             }
             if (newCourse != null && !newCourse.isEmpty()) {
-                update.append("$set", new Document("course", newCourse));
+            	TEusersCollection.updateOne(Filters.eq("Teacher_ID", userIdToUpdate), Updates.set("course", newCourse));
             }
             if (newUsername != null && !newUsername.isEmpty()) {
-            	update.append("$set", new Document("course", newUsername));
+            	TEusersCollection.updateOne(Filters.eq("Teacher_ID", userIdToUpdate), Updates.set("username", newUsername));
             }
             if (newPassword != null && !newPassword.isEmpty()) {
-                update.append("$set", new Document("password", newPassword));
+            	TEusersCollection.updateOne(Filters.eq("Teacher_ID", userIdToUpdate), Updates.set("password", newPassword));
             }
-            if (!update.isEmpty()) {
-            	TEusersCollection.updateOne(filter, update);
+            if (!newFName.isEmpty() || !newLName.isEmpty() || !newCourse.isEmpty() || !newUsername.isEmpty() || !newPassword.isEmpty() ) {
                 System.out.println("Teacher updated successfully!");
             } else {
                 System.out.println("No valid fields to update for the teacher.");
@@ -250,12 +244,83 @@ class teacherDatabase {
     }
 }
 
+class Module {
+	private String MDcode;
+	private String MDname;
+    private String MDdescription;
+    private String MDteacher;
+
+    public Module(String MDcode, String MDname, String MDdescription, String MDteacher) {
+    	this.MDcode = MDcode;
+    	this.MDname = MDname;
+        this.MDdescription = MDdescription;
+        this.MDteacher = MDteacher;
+    }
+
+    public String getCode() {
+        return MDcode;
+    }
+    public String getName() {
+        return MDname;
+    }
+    public String getDescription() {
+        return MDdescription;
+    }
+    public String getTeacher() {
+        return MDteacher;
+    }
+}
+
+class moduleDatabase {
+	private MongoCollection<Document> moduleCollection;
+
+    public moduleDatabase() {
+    	String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
+    	String databaseName = "Module"; 
+    	String collectionName = "TT_modules";
+
+        try { 
+        	ConnectionString connString = new ConnectionString(connectionString); 
+        	MongoClient mongoClient =MongoClients.create(connectionString); 
+        	MongoDatabase database = mongoClient.getDatabase(databaseName); 
+        	moduleCollection = database.getCollection(collectionName);
+    	    System.out.println("Connected Successfully"); 
+    	    }catch(Exception e) {
+    	    	System.err.println("Error connecting: "+ e.getMessage());
+    	    	e.printStackTrace(); System.exit(1); 
+    	    } 
+    }
+
+    public void addModule(Module mod) {
+    	if (moduleExists(mod.getCode())) {
+            System.out.println("Error: Module already");
+            return;
+        }else {
+        Document userDocument = new Document("Module_Code", mod.getCode())
+        		.append("Module_Name", mod.getName())
+        		.append("Module_Description", mod.getDescription())
+        		.append("Module_Teacher", mod.getTeacher());
+
+        moduleCollection.insertOne(userDocument);
+        System.out.println("Module added successfully!");
+        }
+    }
+    
+    private boolean moduleExists(String code) {
+        return moduleCollection.countDocuments(
+                new Document("$or", List.of(
+                        new Document("Module_Code", code)
+                ))
+        ) > 0;
+    }
+}
 
 public class tt_admin {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         studentDatabase STdatabase = new studentDatabase();
         teacherDatabase TEdatabase = new teacherDatabase();
+        moduleDatabase MDdatabase = new moduleDatabase();        
 
         while (true) {
             System.out.println("1. Add Student");
@@ -265,7 +330,8 @@ public class tt_admin {
             System.out.println("5. Display Teachers");
             System.out.println("6. Delete Teacher");
             System.out.println("7. Update User");
-            System.out.println("8. Exit");
+            System.out.println("8. Add Module");
+            System.out.println("9. Exit");
             System.out.print("Enter your choice: ");
             
             int choice = scanner.nextInt();
@@ -354,11 +420,25 @@ public class tt_admin {
                         System.out.println("Invalid user type. Please enter 1 for Teacher or 2 for Student.");
                     }
                     break;
-                    
+                
                 case 8:
-                    System.out.println("Exiting the admin panel. Goodbye!");
+                	System.out.print("Enter Module Code: ");
+                	String MDcode = scanner.nextLine();
+                	System.out.print("Enter Module Name: ");
+                    String MDname = scanner.nextLine();
+                    System.out.print("Enter Module Description: ");
+                    String MDdescription = scanner.nextLine();
+                    System.out.print("Enter Module Teacher: ");
+                    String MDteacher = scanner.nextLine();
+                                
+                    Module newMod = new Module(MDcode, MDname, MDdescription, MDteacher);
+                    MDdatabase.addModule(newMod);
+                    break;
+                    
+                case 9:
+                	System.out.println("Exiting the admin panel. Goodbye!");
                     System.exit(0);
-
+           
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }
