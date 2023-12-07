@@ -74,10 +74,16 @@ public class StudentScheduleActions {
                     .toLocalDateTime();
             LocalDateTime scheduledEdt = ((Date) document.get("end time")).toInstant().atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
-            if (sdt.equals(edt) ||
+
+            // if (sdt.compareTo(scheduledSdt)>=0&&sdt.compareTo(scheduledEdt)>0 ||
+            // edt.compareTo(scheduledSdt)
+            // ) {
+
+            // }
+            if (sdt.equals(scheduledSdt) || sdt.equals(edt) ||
                     sdt.isAfter(scheduledSdt) && sdt.isBefore(scheduledEdt) ||
-                    edt.isAfter(scheduledEdt) && edt.isBefore(scheduledEdt) ||
-                    sdt.isBefore(scheduledEdt) && edt.isBefore(scheduledEdt)) {
+                    edt.isAfter(scheduledSdt) && edt.isBefore(scheduledEdt) ||
+                    sdt.isBefore(scheduledSdt) && edt.isAfter(scheduledEdt)) {
                 return false;
             }
         }
@@ -87,10 +93,12 @@ public class StudentScheduleActions {
                     .toLocalDateTime();
             LocalDateTime scheduledEdt = ((Date) document.get("end time")).toInstant().atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
-            if (sdt.equals(edt) ||
+            if (sdt.equals(scheduledSdt) ||
+                    sdt.equals(edt) ||
+                    edt.equals(scheduledEdt) ||
                     sdt.isAfter(scheduledSdt) && sdt.isBefore(scheduledEdt) ||
-                    edt.isAfter(scheduledEdt) && edt.isBefore(scheduledEdt) ||
-                    sdt.isBefore(scheduledEdt) && edt.isBefore(scheduledEdt)) {
+                    edt.isAfter(scheduledSdt) && edt.isBefore(scheduledEdt) ||
+                    sdt.isBefore(scheduledSdt) && edt.isAfter(scheduledEdt)) {
                 return false;
             }
         }

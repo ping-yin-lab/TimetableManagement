@@ -13,9 +13,11 @@ public class Databases {
     private static MongoCollection<Document> STUDENT_SCHE_DATABASE;
     private static MongoCollection<Document> MESSAGE_DATABASE;
     private static MongoCollection<Document> REQUEST_DATABASE;
+    private static MongoCollection<Document> ANNOUNCEMENT_DATABASE;
     private static String Schedule_databaseName = "Schedule";
     private static String Message_databaseName = "Message";
     private static String Request_databaseName = "Request";
+    private static String Announcement_databaseName = "Announcement";
 
     public static void config() {
         try {
@@ -25,10 +27,12 @@ public class Databases {
             MongoDatabase Schedule_database = mongoClient.getDatabase(Schedule_databaseName);
             MongoDatabase Message_database = mongoClient.getDatabase(Message_databaseName);
             MongoDatabase Request_database = mongoClient.getDatabase(Request_databaseName);
+            MongoDatabase Announcement_database = mongoClient.getDatabase(Announcement_databaseName);
             TEACHER_SCHE_DATABASE = Schedule_database.getCollection("TT_Sche");
             STUDENT_SCHE_DATABASE = Schedule_database.getCollection("Student_Sche");
             MESSAGE_DATABASE = Message_database.getCollection("TT_Message");
             REQUEST_DATABASE = Request_database.getCollection("Student_Request");
+            ANNOUNCEMENT_DATABASE = Announcement_database.getCollection("TT_Announcement");
             // System.out.println("Connected Successfully");
         } catch (Exception e) {
             System.err.println("Error connecting: " + e.getMessage());
@@ -55,5 +59,10 @@ public class Databases {
     public static MongoCollection<Document> REQUEST_DATABASE() {
         config();
         return REQUEST_DATABASE;
+    }
+
+    public static MongoCollection<Document> ANNOUNCEMENT_DATABASE() {
+        config();
+        return ANNOUNCEMENT_DATABASE;
     }
 }
