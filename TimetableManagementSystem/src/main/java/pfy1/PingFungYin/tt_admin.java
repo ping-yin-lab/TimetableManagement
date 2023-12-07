@@ -60,6 +60,100 @@ class teacherUser extends User{
 	}
 }
 
+class adminUser extends User{
+	public adminUser(String id, String fname, String lname, String course, String username, String password) {
+		super(id, fname, lname, course, username, password);
+	}
+}
+
+class adminDatabase { 
+	private MongoCollection<Document> ADusersCollection;
+	public adminDatabase() { 
+	String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
+	String databaseName = "Users_Admin"; 
+	String collectionName = "TT_Users";
+
+    try { 
+    	//ConnectionString connString = new ConnectionString(connectionString); 
+    	MongoClient mongoClient =MongoClients.create(connectionString); 
+    	MongoDatabase database = mongoClient.getDatabase(databaseName); 
+    	ADusersCollection = database.getCollection(collectionName);
+	    System.out.println("Connected Successfully"); 
+	    }catch(Exception e) {
+	    	System.err.println("Error connecting: "+ e.getMessage());
+	    	e.printStackTrace(); System.exit(1); 
+	    } 
+    }
+    
+    public void ADaddUser(adminUser user) {
+    	if (userExists(user.getUsername(), user.getID())) {
+            System.out.println("Error: Username or ID already exists. Please choose different values.");
+            return;
+        }else {
+        Document userDocument = new Document("Admin_ID", user.getID())
+        		.append("first_name", user.getFName())
+        		.append("last_name", user.getLName())
+        		.append("course", user.getCourse())
+        		.append("username", user.getUsername())
+                .append("password", user.getPassword());
+
+        ADusersCollection.insertOne(userDocument);
+        System.out.println("User added successfully!");
+        }
+    }
+    
+    private boolean userExists(String username, String id) {
+        return ADusersCollection.countDocuments(
+                new Document("$or", List.of(
+                        new Document("username", username),
+                        new Document("Admin_ID", id)
+                ))
+        ) > 0;
+    }
+       
+
+    public void displayADUsers() {
+        System.out.println("List of Admins:");
+        ADusersCollection.find().forEach(document ->
+                System.out.println("Username: " + document.get("username") + ", Password: " + document.get("password")));
+    }
+    
+    public void ADUpdate(String adminId, String newFName, String newLName, String newCourse, String newUsername, String newPassword) {
+        try {
+            if (newFName != null && !newFName.isEmpty()) {
+            	ADusersCollection.updateOne(Filters.eq("Admin_ID", adminId), Updates.set("first_name", newFName));
+            }
+            if (newLName != null && !newLName.isEmpty()) {
+            	ADusersCollection.updateOne(Filters.eq("Admin_ID", adminId), Updates.set("last_name", newLName));
+            }
+            if (newCourse != null && !newCourse.isEmpty()) {
+            	ADusersCollection.updateOne(Filters.eq("Admin_ID", adminId), Updates.set("course", newCourse));
+            }
+            if (newUsername != null && !newUsername.isEmpty()) {
+            	ADusersCollection.updateOne(Filters.eq("Admin_ID", adminId), Updates.set("username", newUsername));
+            }
+            if (newPassword != null && !newPassword.isEmpty()) {
+            	ADusersCollection.updateOne(Filters.eq("Admin_ID", adminId), Updates.set("password", newPassword));
+            }
+            if (!newFName.isEmpty() || !newLName.isEmpty() || !newCourse.isEmpty() || !newUsername.isEmpty() || !newPassword.isEmpty() ) {
+                System.out.println("Admin updated successfully!");
+            } else {
+                System.out.println("No valid fields to update for the admin.");
+            }
+        } catch (com.mongodb.MongoException e) {
+            System.err.println("Error updating student in MongoDB: " + e.getMessage());
+        }
+    }
+    
+    public void deleteADuser(String adminId) {
+        try {
+        	ADusersCollection.deleteOne(new Document("Admin_ID", adminId));
+            System.out.println("Admin deleted successfully!");
+        } catch (com.mongodb.MongoException e) {
+            System.err.println("Error deleting student: " + e.getMessage());
+        }
+    }
+}
 
 class studentDatabase { 
 	private MongoCollection<Document> STusersCollection;
@@ -106,7 +200,6 @@ class studentDatabase {
         ) > 0;
     }
        
-
     public void displaySTUsers() {
         System.out.println("List of Students:");
         STusersCollection.find().forEach(document ->
@@ -385,29 +478,61 @@ class lecturehallDatabase {
 public class tt_admin {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        adminDatabase ADdatabase = new adminDatabase();
         studentDatabase STdatabase = new studentDatabase();
         teacherDatabase TEdatabase = new teacherDatabase();
         moduleDatabase MDdatabase = new moduleDatabase();       
         lecturehallDatabase LHdatabase = new lecturehallDatabase();
 
         while (true) {
-            System.out.println("1. Add Student");
-            System.out.println("2. Display Students");
-            System.out.println("3. Delete Student");
-            System.out.println("4. Add Teacher");
-            System.out.println("5. Display Teachers");
-            System.out.println("6. Delete Teacher");
-            System.out.println("7. Update User");
-            System.out.println("8. Add Module");
-            System.out.println("9. Add Lecture Hall");
-            System.out.println("10. Exit");
+        	System.out.println("1. Add Admin");
+        	System.out.println("2. Display Admin");
+            System.out.println("3. Delete Admin");
+            System.out.println("4. Add Student");
+            System.out.println("5. Display Students");
+            System.out.println("6. Delete Student");
+            System.out.println("7. Add Teacher");
+            System.out.println("8. Display Teachers");
+            System.out.println("9. Delete Teacher");
+            System.out.println("10. Update User");
+            System.out.println("11. Add Module");
+            System.out.println("12. Add Lecture Hall");
+            System.out.println("13. Exit");
             System.out.print("Enter your choice: ");
             
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
 
             switch (choice) {
-                case 1:
+            	case 1:
+            		System.out.print("Enter Admin Id: ");
+            		String ADid = scanner.nextLine();
+            		System.out.print("Enter First Name: ");
+            		String ADfname = scanner.nextLine();
+            		System.out.print("Enter Last Name: ");
+            		String ADlname = scanner.nextLine();
+            		System.out.print("Enter Course: ");
+            		String ADcourse = scanner.nextLine();
+            		System.out.print("Enter username: ");
+            		String ADusername = scanner.nextLine();
+            		System.out.print("Enter password: ");
+            		String ADpassword = scanner.nextLine();
+            		
+            		adminUser ADnewUser = new adminUser(ADid, ADfname, ADlname, ADcourse, ADusername, ADpassword);
+                    ADdatabase.ADaddUser(ADnewUser);
+                    break;
+                    
+            	case 2:
+                    ADdatabase.displayADUsers();
+                    break;
+                    
+            	case 3:
+                  	 System.out.print("Enter Admin ID to delete: ");
+                       String ADId = scanner.nextLine();
+                       ADdatabase.deleteADuser(ADId);
+                       break;
+            		
+                case 4:
                 	System.out.print("Enter StudentId: ");
                 	String STid = scanner.nextLine();
                 	System.out.print("Enter First Name: ");
@@ -421,22 +546,21 @@ public class tt_admin {
                     System.out.print("Enter password: ");
                     String STpassword = scanner.nextLine();
                     
-                    
                     studentUser STnewUser = new studentUser(STid, STfname, STlname, STcourse,STusername, STpassword);
                     STdatabase.STaddUser(STnewUser);
                     break;
 
-                case 2:
+                case 5:
                     STdatabase.displaySTUsers();
                     break;
                     
-                case 3:
+                case 6:
                	 System.out.print("Enter student ID to delete: ");
                     String STId = scanner.nextLine();
                     STdatabase.deleteSTuser(STId);
                     break;
                 
-                case 4:
+                case 7:
                 	System.out.print("Enter Teacher Id: ");
                 	String TEid = scanner.nextLine();
                 	System.out.print("Enter First Name: ");
@@ -454,18 +578,22 @@ public class tt_admin {
                     TEdatabase.TEaddUser(TEnewUser);
                     break;
                     
-                case 5:
+                case 8:
                 	TEdatabase.displayTEUsers();
                     break;
                     
-                case 6:
+                case 9:
                 	 System.out.print("Enter teacher ID to delete: ");
                      String TEId = scanner.nextLine();
                      TEdatabase.deleteTEuser(TEId);
                      break;
                      
-                case 7:
-                	System.out.print("Enter user type (1 for Teacher, 2 for Student): ");
+                case 10:
+                	System.out.println("Enter user type");
+                	System.out.println("1. Admin");
+                	System.out.println("2. Teacher");
+                	System.out.println("3. Student");
+                	System.out.println("Enter your choice: ");
                     int userTypeToUpdate = scanner.nextInt();
                     scanner.nextLine();
                     System.out.print("Enter user ID to update: ");
@@ -482,15 +610,17 @@ public class tt_admin {
                     String newPassword = scanner.nextLine();
 
                     if (userTypeToUpdate == 1) {
-                        TEdatabase.TEUpdate(userIdToUpdate, newFName, newLName, newCourse, newUsername, newPassword);
+                        ADdatabase.ADUpdate(userIdToUpdate, newFName, newLName, newCourse, newUsername, newPassword);
                     } else if (userTypeToUpdate == 2) {
+                    	TEdatabase.TEUpdate(userIdToUpdate, newFName, newLName, newCourse, newUsername, newPassword);
+                    } else if (userTypeToUpdate == 3) {
                         STdatabase.STUpdate(userIdToUpdate, newFName, newLName, newCourse, newUsername, newPassword);
                     } else {
-                        System.out.println("Invalid user type. Please enter 1 for Teacher or 2 for Student.");
+                        System.out.println("Invalid user type. Please enter 1 for Teacher 2 for Student.");
                     }
                     break;
                 
-                case 8:
+                case 11:
                 	System.out.print("Enter Module Code: ");
                 	String MDcode = scanner.nextLine();
                 	System.out.print("Enter Module Name: ");
@@ -504,7 +634,7 @@ public class tt_admin {
                     MDdatabase.addModule(newMod);
                     break;
                     
-                case 9:
+                case 12:
                 	System.out.print("Enter Class Code: ");
                 	String LHcode = scanner.nextLine();
                 	System.out.print("Enter Building Name: ");
@@ -518,7 +648,7 @@ public class tt_admin {
                     LHdatabase.addLH(newHall);
                     break;
                     
-                case 10:
+                case 13:
                 	System.out.println("Exiting the admin panel. Goodbye!");
                     System.exit(0);
                     
