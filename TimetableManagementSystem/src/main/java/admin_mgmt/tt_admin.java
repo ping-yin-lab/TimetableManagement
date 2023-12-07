@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -261,7 +260,7 @@ class scheduleDatabase {
 		System.out.println("Holiday Deleted successfully!");
 	}
 
-	// Custom_evenet_Managment
+	// Custom_event_Managment
 	public void displayCEvent() {
 		System.out.println("List of Custom Event:");
 		Bson filtering = Filters.eq("type", "Event");
@@ -293,6 +292,40 @@ class scheduleDatabase {
 	public void deleteCEvent(Bson filter) {
 		SDCollection.deleteOne(filter);
 		System.out.println("Custom Event Deleted successfully!");
+	}
+
+	//personal Admin timetable
+	public void displayPersonalAdmin() {
+		System.out.println("List of Custom Event:");
+		Bson filtering = Filters.eq("type", "PersonalA");
+		SDCollection.find(filtering)
+				.forEach(document -> System.out
+						.println("Title: " + document.get("title") + "\n Start time: " + document.get("start time")
+								+ "\n End time: " + document.get("end time") + "\n==========================\n"));
+
+	}
+
+	public void addPersoanlAdmin(Personal_Schedule TT) {
+		Document userDocument = new Document("userid", TT.getUserid()).append("title", TT.getSchedulename())
+				.append("start time", TT.getStarttime()).append("end time", TT.getEndtime())
+				.append("type", TT.getType());
+		SDCollection.insertOne(userDocument);
+		System.out.println("Personal admin added successfully!");
+
+	}
+
+	public void updatePersonalAdmin(Personal_Schedule TT, Bson updatefilter) {
+		Document updateDoc = new Document("userid", TT.getUserid()).append("title", TT.getSchedulename())
+				.append("start time", TT.getStarttime()).append("end time", TT.getEndtime())
+				.append("type", TT.getType());
+		Bson updateop = new Document("$set", updateDoc);
+		SDCollection.updateOne(updatefilter, updateop);
+		System.out.println("Personal admin updated successfully!");
+	}
+
+	public void deletePersonalAdmin(Bson filter) {
+		SDCollection.deleteOne(filter);
+		System.out.println("Personal admin Deleted successfully!");
 	}
 }
 
@@ -553,11 +586,12 @@ public class tt_admin {
 					break;
 				case 5:
 					System.out.println("Schedule Management System");
-					System.out.println("1. Class Schedule Management");
-					System.out.println("2. Exam Management");
-					System.out.println("3. Holiday Management");
-					System.out.println("4. Custom Event Teachers");
-					System.out.println("5. exit to main menu");
+					System.out.println("1. Class Schedule");
+					System.out.println("2. Exam Schedule");
+					System.out.println("3. Holiday Schedule");
+					System.out.println("4. Custom Event Schedule");
+					System.out.println("5. Personal Admin Schedule");
+					System.out.println("6. Exit to main menu");
 					System.out.println("Input : ");
 					int Schedule_choice = scanner.nextInt();
 					scanner.nextLine(); // Consume the newline character
@@ -775,6 +809,78 @@ public class tt_admin {
 								default:
 									System.out.println("Invalid input entered");
 							}
+						case 5:
+							System.out.println("==== Personal Admin Schedule ====");
+							SDDatabase.displayPersonalAdmin();
+							System.out.println("1. Add new admin Schedule");
+							System.out.println("2. Update admin schedule");
+							System.out.println("3. Delete admin schedule");
+							System.out.println("4. Back to main menu");
+							System.out.print("Input : ");
+							int adminsche_choice = Integer.parseInt(scanner.nextLine());
+							switch (adminsche_choice) {
+								case 1:
+									System.out.println("Enter Schedule title: ");
+									String stitle = scanner.nextLine();
+									System.out.println("==Input Starting time==");
+									System.out.print("Enter Date in format yyyy-mm-dd :");
+									stdate = scanner.nextLine();
+									System.out.print("Enter Starting time in format HH:mm :");
+									sttime = scanner.nextLine();
+									stdt = LocalDateTime.parse(stdate + "T" + sttime);
+									System.out.println("==Input Ending time==");
+									System.out.print("Enter Date in format yyyy-mm-dd :");
+									eddate = scanner.nextLine();
+									System.out.print("Enter Ending time in format HH:mm :");
+									edtime = scanner.nextLine();
+									eddt = LocalDateTime.parse(eddate + "T" + edtime);
+									Personal_Schedule persoanladmin = new Personal_Schedule(1, stitle, stdt, eddt, "PersonalA");
+									SDDatabase.addPersoanlAdmin(persoanladmin);
+									break;
+								case 2:
+									System.out.println("Updating exist Personal Admin");
+									System.out.print("Enter title you want to change: ");
+									String target = scanner.nextLine();
+									Bson Updatefilter = Filters.eq("title", target);
+
+									System.out.println("New Event Title : ");
+									stitle = scanner.nextLine();
+									System.out.println("==Input New Starting time==");
+									System.out.print("Enter Date in format yyyy-mm-dd :");
+									stdate = scanner.nextLine();
+									System.out.print("Enter Starting time in format HH:mm :");
+									sttime = scanner.nextLine();
+									stdt = LocalDateTime.parse(stdate + "T" + sttime);
+									System.out.println("==Input New Ending time==");
+									System.out.print("Enter Date in format yyyy-mm-dd :");
+									eddate = scanner.nextLine();
+									System.out.print("Enter Ending time in format HH:mm :");
+									edtime = scanner.nextLine();
+									eddt = LocalDateTime.parse(eddate + "T" + edtime);
+									Personal_Schedule Updatepsche = new Personal_Schedule(1, stitle, stdt, eddt,
+											"Event");
+									SDDatabase.updatePersonalAdmin(Updatepsche, Updatefilter);
+									break;
+								case 3:
+									System.out.println("Enter the title of which item you want to delete : ");
+									String title = scanner.nextLine();
+									Bson filter = Filters.eq("title", title);
+									SDDatabase.deletePersonalAdmin(filter);
+									break;
+								case 4:
+									System.out.println("Returning back to main menu ..");
+									break;
+								default:
+									System.out.println("Invalid input entered");
+									break;
+							}
+							break;
+						case 6:
+							System.out.println("Returning to main menu");
+							break;
+						default:
+							System.out.println("Invalid Input!");
+							break;
 					}
 				case 6:
 					System.out.println("==== Contact Management ====");
@@ -825,6 +931,7 @@ public class tt_admin {
 							break;
 						default:
 							System.out.println("Invalid input entered");
+							break;
 					}
 					break;
 			}

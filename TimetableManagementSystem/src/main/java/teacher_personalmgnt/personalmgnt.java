@@ -22,42 +22,42 @@ public class personalmgnt {
 		public String type;
 		public String email;
 		public String telephone;
-	
+
 		public contact(String name, String type, String email, String telephone) {
 			this.name = name;
 			this.type = type;
 			this.email = email;
 			this.telephone = telephone;
 		}
-	
+
 		public String getName() {
 			return name;
 		}
-	
+
 		public void setName(String name) {
 			this.name = name;
 		}
-	
+
 		public String getType() {
 			return type;
 		}
-	
+
 		public void setType(String type) {
 			this.type = type;
 		}
-	
+
 		public String getEmail() {
 			return email;
 		}
-	
+
 		public void setEmail(String email) {
 			this.email = email;
 		}
-	
+
 		public String getTelephone() {
 			return telephone;
 		}
-	
+
 		public void setTelephone(String telephone) {
 			this.telephone = telephone;
 		}
@@ -65,12 +65,12 @@ public class personalmgnt {
 
 	public static class contactDatabase {
 		private MongoCollection<Document> ContactCollection;
-	
+
 		public contactDatabase() {
 			String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
 			String databaseName = "Contact";
 			String collectionName = "Contactlist";
-	
+
 			try {
 				ConnectionString connString = new ConnectionString(connectionString);
 				MongoClient mongoClient = MongoClients.create(connectionString);
@@ -83,7 +83,7 @@ public class personalmgnt {
 				System.exit(1);
 			}
 		}
-	
+
 		public void addContact(contact contactelement) {
 			Document userDocument = new Document("name", contactelement.getName())
 					.append("email", contactelement.getEmail())
@@ -92,7 +92,7 @@ public class personalmgnt {
 			ContactCollection.insertOne(userDocument);
 			System.out.println("Contact added successfully!");
 		}
-	
+
 		public void displayContact() {
 			System.out.println("List of Contacts:");
 			Bson filtering = Filters.eq("type", "Teacher");
@@ -100,7 +100,7 @@ public class personalmgnt {
 					.println("Name: " + document.get("name") + ", Email: " + document.get("email")
 							+ ", phone: " + document.get("phone")));
 		}
-	
+
 		public void updateContact(contact updatecontactelement, Bson updatefilter) {
 			Document updatecon = new Document("name", updatecontactelement.getName())
 					.append("email", updatecontactelement.getEmail())
@@ -110,12 +110,42 @@ public class personalmgnt {
 			ContactCollection.updateOne(updatefilter, updateop);
 			System.out.println("Contact updated successfully!");
 		}
-	
+
 		public void deleteexam(Bson filter) {
 			ContactCollection.deleteOne(filter);
 			System.out.println("Exam Deleted successfully!");
 		}
-	
+
+	}
+
+	public static class moduleDatabase {
+		private MongoCollection<Document> moduleCollection;
+
+		public moduleDatabase() {
+			String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
+			String databaseName = "Module";
+			String collectionName = "TT_modules";
+
+			try {
+				ConnectionString connString = new ConnectionString(connectionString);
+				MongoClient mongoClient = MongoClients.create(connectionString);
+				MongoDatabase database = mongoClient.getDatabase(databaseName);
+				moduleCollection = database.getCollection(collectionName);
+				System.out.println("Connected Module Successfully");
+			} catch (Exception e) {
+				System.err.println("Error connecting: " + e.getMessage());
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+
+		public void displayModuleTeacher(String Teacher_ID) {
+			System.out.println("List of Module:");
+			Bson filtering = Filters.eq("Module_Teacher", Teacher_ID);
+			moduleCollection.find(filtering).forEach(document -> System.out
+					.println("Module Code: " + document.get("Module_Code") + "\n Module Name: " + document.get("Module_Name")
+							+ "\n Module Description : " + document.get("Module_Description")+"\n=========================\n"));
+		}
 	}
 
 	private static MongoCollection<Document> scheduleCollection;
@@ -170,8 +200,6 @@ public class personalmgnt {
 				+ "\n==========================\n"));
 	}
 
-	
-
 	public static void main(String[] args) {
 
 		String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
@@ -190,7 +218,7 @@ public class personalmgnt {
 			System.exit(1);
 		}
 		contactDatabase CTDatabase = new contactDatabase();
-
+		moduleDatabase ModuleDatabase = new moduleDatabase();
 		Scanner reader = new Scanner(System.in);
 		System.out.println("Welcome to Teacher System");
 		System.out.println("==========================");
@@ -200,6 +228,8 @@ public class personalmgnt {
 		System.out.println("3. Class Management");
 		System.out.println("4. Time off Management");
 		System.out.println("5. Contact Management");
+		System.out.println("6. Your Modules");
+		System.out.println("7. Log out");
 		System.out.print("Input : ");
 		String choice = reader.nextLine();
 		switch (choice) {
@@ -352,58 +382,63 @@ public class personalmgnt {
 							break;
 					}
 				} while (TimeOff != 5);
-		case "5":
-		System.out.println("==== Contact Management ====");
-					CTDatabase.displayContact();
-					System.out.println("1. Add new Contact");
-					System.out.println("2. Update Contact");
-					System.out.println("3. Delete Contact");
-					System.out.println("4. Back to main menu");
-					System.out.print("Input : ");
-					int contact_choice = Integer.parseInt(reader.nextLine());
-					switch (contact_choice) {
-						case 1:
-							System.out.println("Enter Contact name: ");
-							String contactName = reader.nextLine();
+			case "5":
+				System.out.println("==== Contact Management ====");
+				CTDatabase.displayContact();
+				System.out.println("1. Add new Contact");
+				System.out.println("2. Update Contact");
+				System.out.println("3. Delete Contact");
+				System.out.println("4. Back to main menu");
+				System.out.print("Input : ");
+				int contact_choice = Integer.parseInt(reader.nextLine());
+				switch (contact_choice) {
+					case 1:
+						System.out.println("Enter Contact name: ");
+						String contactName = reader.nextLine();
 
-							System.out.print("Enter your email :");
-							String conemail = reader.nextLine();
+						System.out.print("Enter your email :");
+						String conemail = reader.nextLine();
 
-							System.out.print("Enter your phone :");
-							String conphone = reader.nextLine();
+						System.out.print("Enter your phone :");
+						String conphone = reader.nextLine();
 
-							contact contactelement = new contact(contactName, "Teacher", conemail, conphone);
-							CTDatabase.addContact(contactelement);
-							break;
-						case 2:
-							System.out.println("Updating exist Contact");
-							System.out.print("Enter name you want to change: ");
-							String target = reader.nextLine();
-							Bson Updatefilter = Filters.eq("name", target);
+						contact contactelement = new contact(contactName, "Teacher", conemail, conphone);
+						CTDatabase.addContact(contactelement);
+						break;
+					case 2:
+						System.out.println("Updating exist Contact");
+						System.out.print("Enter name you want to change: ");
+						String target = reader.nextLine();
+						Bson Updatefilter = Filters.eq("name", target);
 
-							System.out.print("Enter your new email :");
-							conemail = reader.nextLine();
+						System.out.print("Enter your new email :");
+						conemail = reader.nextLine();
 
-							System.out.print("Enter your new phone :");
-							conphone = reader.nextLine();
+						System.out.print("Enter your new phone :");
+						conphone = reader.nextLine();
 
-							contact updatecontactelement = new contact(target, "Teacher", conemail, conphone);
-							CTDatabase.updateContact(updatecontactelement, Updatefilter);
-							break;
-						case 3:
-							System.out.println("Enter the name of which item you want to delete : ");
-							String name = reader.nextLine();
-							Bson filter = Filters.eq("name", name);
-							CTDatabase.deleteexam(filter);
-							break;
-						case 4:
-							System.out.println("Returning back to main menu ..");
-							break;
-						default:
-							System.out.println("Invalid input entered");
-					}
-		break;
-			}
+						contact updatecontactelement = new contact(target, "Teacher", conemail, conphone);
+						CTDatabase.updateContact(updatecontactelement, Updatefilter);
+						break;
+					case 3:
+						System.out.println("Enter the name of which item you want to delete : ");
+						String name = reader.nextLine();
+						Bson filter = Filters.eq("name", name);
+						CTDatabase.deleteexam(filter);
+						break;
+					case 4:
+						System.out.println("Returning back to main menu ..");
+						break;
+					default:
+						System.out.println("Invalid input entered");
+				}
+				break;
+				case "6":
+				ModuleDatabase.displayModuleTeacher("teacher1");
+				break;
+				default:
+				System.out.println("Invalid input!");
+		}
 	}
 
 }
