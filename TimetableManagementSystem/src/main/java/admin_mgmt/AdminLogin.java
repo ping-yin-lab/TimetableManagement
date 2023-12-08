@@ -6,26 +6,8 @@ import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
-
-//class Session {
-//    private static String currentUser;
-//
-//    static String getCurrentUser() {
-//        return currentUser;
-//    }
-//
-//    static void setCurrentUser(String username) {
-//        currentUser = username;
-//    }
-//
-//    static void resetSession() {
-//        currentUser = null;
-//    }
-//}
 
 public class AdminLogin {
 
@@ -61,7 +43,7 @@ public class AdminLogin {
                             login(scanner, adminCollection);
                             break;
                         case 2:
-                            System.out.println("Exiting the Student module.");
+                            System.out.println("Exiting the Admin module.");
                             mongoClient.close();
                             System.exit(0);
                         default:
@@ -69,7 +51,7 @@ public class AdminLogin {
                     }
                 } else {
                     System.out.println("Admin (Logged in as " + Session.getCurrentUser() + "):");
-                    System.out.println("1. Perform Student Operations");
+                    System.out.println("1. Perform Admin Operations");
                     System.out.println("2. Logout");
 
                     System.out.print("Choose an option: ");
@@ -102,7 +84,6 @@ public class AdminLogin {
 
     private static void initializeMongoDB() {
         try {
-            // Replace the connection string with your MongoDB connection string
             String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
             MongoClient mongoClient = MongoClients.create(connectionString);
                         

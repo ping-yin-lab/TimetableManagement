@@ -2,30 +2,12 @@ package admin_mgmt;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
-
-//class Session {
-//    private static String currentUser;
-//
-//    static String getCurrentUser() {
-//        return currentUser;
-//    }
-//
-//    static void setCurrentUser(String username) {
-//        currentUser = username;
-//    }
-//
-//    static void resetSession() {
-//        currentUser = null;
-//    }
-//}
 
 public class TeacherLogin {
 
@@ -41,7 +23,7 @@ public class TeacherLogin {
 
             while (true) {
                 if (Session.getCurrentUser() == null) {
-                    System.out.println("Admin:");
+                    System.out.println("Teacher:");
                     System.out.println("1. Login");
                     System.out.println("2. Exit");
 
@@ -61,7 +43,7 @@ public class TeacherLogin {
                             login(scanner, teacherCollection);
                             break;
                         case 2:
-                            System.out.println("Exiting the Student module.");
+                            System.out.println("Exiting the Teacher module.");
                             mongoClient.close();
                             System.exit(0);
                         default:

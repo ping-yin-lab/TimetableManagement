@@ -2,11 +2,9 @@ package admin_mgmt;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -40,7 +38,7 @@ public class StudentLogin {
 
             while (true) {
                 if (Session.getCurrentUser() == null) {
-                    System.out.println("Student Module:");
+                    System.out.println("Student :");
                     System.out.println("1. Login");
                     System.out.println("2. Exit");
 
@@ -67,7 +65,7 @@ public class StudentLogin {
                             System.out.println("Invalid option. Please choose a valid option.");
                     }
                 } else {
-                    System.out.println("Student Module (Logged in as " + Session.getCurrentUser() + "):");
+                    System.out.println("Student (Logged in as " + Session.getCurrentUser() + "):");
                     System.out.println("1. Perform Student Operations");
                     System.out.println("2. Logout");
 
@@ -146,7 +144,7 @@ public class StudentLogin {
 
     private static void logout() {
         try {
-            System.out.println("Logging out...");
+            System.out.println("Logging out");
             Session.resetSession();
         } catch (Exception e) {
             System.err.println("An unexpected error occurred during logout: " + e.getMessage());
