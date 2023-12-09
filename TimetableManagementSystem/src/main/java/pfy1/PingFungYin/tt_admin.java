@@ -102,7 +102,7 @@ class adminDatabase {
         }
     }
     
-    private boolean userExists(String username, String id) {
+    public boolean userExists(String username, String id) {
         return ADusersCollection.countDocuments(
                 new Document("$or", List.of(
                         new Document("username", username),
@@ -110,7 +110,6 @@ class adminDatabase {
                 ))
         ) > 0;
     }
-       
 
     public void displayADUsers() {
         System.out.println("List of Admins:");
@@ -191,7 +190,7 @@ class studentDatabase {
         }
     }
     
-    private boolean userExists(String username, String id) {
+    public boolean userExists(String username, String id) {
         return STusersCollection.countDocuments(
                 new Document("$or", List.of(
                         new Document("username", username),
@@ -280,7 +279,7 @@ class teacherDatabase {
         }
     }
     
-    private boolean userExists(String username, String id) {
+    public boolean userExists(String username, String id) {
         return TEusersCollection.countDocuments(
                 new Document("$or", List.of(
                         new Document("username", username),
@@ -394,7 +393,7 @@ class moduleDatabase {
         }
     }
     
-    private boolean moduleExists(String code) {
+    public boolean moduleExists(String code) {
         return moduleCollection.countDocuments(
                 new Document("$or", List.of(
                         new Document("Module_Code", code)
@@ -452,7 +451,7 @@ class lecturehallDatabase {
 
     public void addLH(LectureHall lecture) {
     	if (lectureExists(lecture.getCode())) {
-            System.out.println("Error: Module already");
+            System.out.println("Error: Lecture already exists!");
             return;
         }else {
         Document userDocument = new Document("Hall_Code", lecture.getCode())
@@ -465,7 +464,7 @@ class lecturehallDatabase {
         }
     }
     
-    private boolean lectureExists(String code) {
+    public boolean lectureExists(String code) {
         return moduleCollection.countDocuments(
                 new Document("$or", List.of(
                         new Document("Hall_Code", code)
@@ -474,6 +473,51 @@ class lecturehallDatabase {
     }
 }
 
+class Announcement {
+	private String Title;
+	private String Message;
+
+    public Announcement(String Title, String Message) {
+    	this.Title = Title;
+    	this.Message = Message;
+    }
+
+    public String getTitle() {
+        return Title;
+    }
+    public String getMessage() {
+        return Message;
+    }
+}
+
+class announcementDatabase {
+	private MongoCollection<Document> announcementCollection;
+
+    public announcementDatabase() {
+    	String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
+    	String databaseName = "Announcement"; 
+    	String collectionName = "TT_AdminAnnouncments";
+
+        try { 
+        	//ConnectionString connString = new ConnectionString(connectionString); 
+        	MongoClient mongoClient =MongoClients.create(connectionString); 
+        	MongoDatabase database = mongoClient.getDatabase(databaseName); 
+        	announcementCollection = database.getCollection(collectionName);
+    	    System.out.println("Connected Successfully"); 
+    	    }catch(Exception e) {
+    	    	System.err.println("Error connecting: "+ e.getMessage());
+    	    	e.printStackTrace(); System.exit(1); 
+    	    } 
+    }
+
+    public void addAN(Announcement ann) {
+        Document userDocument = new Document("Title", ann.getTitle())
+        		.append("Message", ann.getMessage());
+
+        announcementCollection.insertOne(userDocument);
+        System.out.println("Announcement has been posted!");
+    }
+}
 
 public class tt_admin {
     public static void main(String[] args) {
@@ -483,6 +527,7 @@ public class tt_admin {
         teacherDatabase TEdatabase = new teacherDatabase();
         moduleDatabase MDdatabase = new moduleDatabase();       
         lecturehallDatabase LHdatabase = new lecturehallDatabase();
+        announcementDatabase ANdatabase = new announcementDatabase();
 
         while (true) {
         	System.out.println("1. Add Admin");
@@ -497,7 +542,8 @@ public class tt_admin {
             System.out.println("10. Update User");
             System.out.println("11. Add Module");
             System.out.println("12. Add Lecture Hall");
-            System.out.println("13. Exit");
+            System.out.println("13. Post an Announcement");
+            System.out.println("14. Exit");
             System.out.print("Enter your choice: ");
             
             int choice = scanner.nextInt();
@@ -649,6 +695,17 @@ public class tt_admin {
                     break;
                     
                 case 13:
+                	System.out.print("Enter Title: ");
+                	String ANtitle = scanner.nextLine();
+                	System.out.print("Enter Message: ");
+                    String ANmessage = scanner.nextLine();
+                    
+                                
+                    Announcement newAnnouncement = new Announcement(ANtitle, ANmessage);
+                    ANdatabase.addAN(newAnnouncement);
+                    break;
+                    
+                case 14:
                 	System.out.println("Exiting the admin panel. Goodbye!");
                     System.exit(0);
                     
