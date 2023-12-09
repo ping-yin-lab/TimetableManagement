@@ -17,7 +17,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
-import teacher_personalmgnt.Personal_Schedule;
+import teacher.Personal_Schedule;
 
 class checkDateValidity {
 
@@ -53,7 +53,6 @@ class contact {
 	public String type;
 	public String email;
 	public String telephone;
-
 	public contact(String name, String type, String email, String telephone) {
 		this.name = name;
 		this.type = type;

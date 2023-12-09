@@ -1,4 +1,4 @@
-package teacher_personalmgnt;
+package teacher;
 
 import static org.junit.jupiter.api.Assertions.*;
 

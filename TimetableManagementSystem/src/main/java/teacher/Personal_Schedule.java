@@ -1,4 +1,4 @@
-package teacher_personalmgnt;
+package teacher;
 import java.time.LocalDateTime;
 
 public class Personal_Schedule {
