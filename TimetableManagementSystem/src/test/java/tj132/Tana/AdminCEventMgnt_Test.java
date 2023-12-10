@@ -1,8 +1,8 @@
-package admin_mgmt_test;
+package tj132.Tana;
 
-import admin_mgmt.tt_admin.Schedule;
-import admin_mgmt.tt_admin.scheduleDatabase;
-import teacher.Personal_Schedule;
+import tj132.Tana.tt_admin.Schedule;
+import tj132.Tana.tt_admin.scheduleDatabase;
+import tj132.Tana.Personal_Schedule;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
@@ -23,7 +23,7 @@ import java.util.random.*;
 
 import org.junit.jupiter.api.Test;
 
-class AdminExamMgnt_test {
+class AdminCEventMgnt_test {
 
 	private scheduleDatabase scheduleDB;
 	private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
@@ -38,50 +38,50 @@ class AdminExamMgnt_test {
     }
     ///////////////Specification based///////////////////
     @Test
-    void Specification_testCreateExamSchedule() {
-    	Schedule realSchedule = new Schedule(1, "JingleJingle", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
-        scheduleDB.addExamSchedule(realSchedule);
-        assertTrue(scheduleDB.displaySpecific("JingleJingle", "Exam"));
+    void Specification_testCreateCEventSchedule() {
+    	Schedule realSchedule = new Schedule(1, "JingleJingle", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Event");
+        scheduleDB.addCEvent(realSchedule);
+        assertTrue(scheduleDB.displaySpecific("JingleJingle", "Event"));
     }
     
     @Test
-    void Specification_testUpdateExamSchedule() {
-        Schedule realSchedule = new Schedule(1, "Slowking", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
-        scheduleDB.addExamSchedule(realSchedule);
-        realSchedule.setSchedulename("FastKing");
+    void Specification_testUpdateCEventSchedule() {
+        Schedule realSchedule = new Schedule(1, "Lacking", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Event");
+        scheduleDB.addCEvent(realSchedule);
+        realSchedule.setSchedulename("Stable");
         realSchedule.setStarttime(LocalDateTime.now().plusDays(1));
         realSchedule.setEndtime(LocalDateTime.now().plusDays(1).plusHours(2));
         Bson filter = Filters.and(
             Filters.eq("userid", 1),
-            Filters.eq("title", "Slowking"),
-            Filters.eq("type", "Exam")
+            Filters.eq("title", "Lacking"),
+            Filters.eq("type", "Event")
         );
-        scheduleDB.updateExam(realSchedule, filter);
+        scheduleDB.updateCEvent(realSchedule, filter);
         Bson updatedFilter = Filters.and(
             Filters.eq("userid", 1),
-            Filters.eq("title", "FastKing"),
-            Filters.eq("type", "Exam")
+            Filters.eq("title", "Stable"),
+            Filters.eq("type", "Event")
         );
-        assertTrue(scheduleDB.displaySpecific("FastKing", "Exam"));
+        assertTrue(scheduleDB.displaySpecific("Stable", "Event"));
     }
-    //Delete Exam schedule
+    //Delete CEvent schedule
     @Test
-    void Specification_testDeleteExamSchedule() {
-        Schedule realSchedule = new Schedule(1, "Poochyeena", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
-        scheduleDB.addExamSchedule(realSchedule);
+    void Specification_testDeleteCEventSchedule() {
+        Schedule realSchedule = new Schedule(1, "Poochyeena", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Event");
+        scheduleDB.addCEvent(realSchedule);
         Bson filter = Filters.and(
             Filters.eq("userid", 1),
             Filters.eq("title", "Poochyeena"),
-            Filters.eq("type", "Exam")
+            Filters.eq("type", "Event")
         );
-        scheduleDB.deleteexam(filter);
+        scheduleDB.deleteCEvent(filter);
         long count = scheduleDB.SDCollection.countDocuments(filter);
-        assertEquals(0, count, "Exam schedule should be deleted from the database");
+        assertEquals(0, count, "CEvent schedule should be deleted from the database");
     }
-    //Display Exam schedule
+    //Display CEvent schedule
     @Test
-    void Specification_testDisplayExamSchedule() {
-        assertTrue(scheduleDB.displayResult("Exam"));
+    void Specification_testDisplayCEventSchedule() {
+        assertTrue(scheduleDB.displayResult("Event"));
     }
     
     /////////////random-based //////////////////////////////
@@ -104,24 +104,24 @@ class AdminExamMgnt_test {
     
     //Random create
     @Test
-    void testCreateRandomExamSchedule() {
+    void testCreateRandomCEventSchedule() {
         // Generate random inputs
         int userId = generateRandomUserId();
         String title = generateRandomTitle();
         LocalDateTime startTime = generateRandomStartTime();
         LocalDateTime endTime = generateRandomEndTime();
-        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Exam");
-        scheduleDB.addExamSchedule(randomSchedule);
+        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Event");
+        scheduleDB.addCEvent(randomSchedule);
         Bson filter = Filters.and(
             Filters.eq("userid", userId),
             Filters.eq("title", title),
-            Filters.eq("type", "Exam")
+            Filters.eq("type", "Event")
         );
-        assertTrue(scheduleDB.displaySpecific(title, "Exam"));
+        assertTrue(scheduleDB.displaySpecific(title, "Event"));
     }
     //Random Update
     @Test
-    void testUpdateRandomExamSchedule() {
+    void testUpdateRandomCEventSchedule() {
         // Generate random inputs
         int userId = generateRandomUserId();
         String title = generateRandomTitle();
@@ -129,8 +129,8 @@ class AdminExamMgnt_test {
         LocalDateTime endTime = generateRandomEndTime();
 
         // Create a real Personal_Schedule object and add it to the database
-        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Exam");
-        scheduleDB.addExamSchedule(randomSchedule);
+        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Event");
+        scheduleDB.addCEvent(randomSchedule);
 
         // Generate random data for update
         String updatedTitle = generateRandomTitle();
@@ -144,23 +144,23 @@ class AdminExamMgnt_test {
         Bson filter = Filters.and(
             Filters.eq("userid", userId),
             Filters.eq("title", title),
-            Filters.eq("type", "Exam")
+            Filters.eq("type", "Event")
         );
-        scheduleDB.updateExam(randomSchedule, filter);
+        scheduleDB.updateCEvent(randomSchedule, filter);
 
         // Verify that the schedule was updated successfully
         Bson updatedFilter = Filters.and(
             Filters.eq("userid", userId),
             Filters.eq("title", updatedTitle),
-            Filters.eq("type", "Exam")
+            Filters.eq("type", "Event")
         );
         long count = scheduleDB.SDCollection.countDocuments(updatedFilter);
-        assertEquals(1, count, "Exam schedule should be updated in the database");
+        assertEquals(1, count, "CEvent schedule should be updated in the database");
     }
 
     //Random delete
     @Test
-    void testDeleteRandomExam() {
+    void testDeleteRandomCEvent() {
         // Generate random inputs
         int userId = generateRandomUserId();
         String title = generateRandomTitle();
@@ -168,71 +168,70 @@ class AdminExamMgnt_test {
         LocalDateTime endTime = generateRandomEndTime();
 
         // Create a real Personal_Schedule object and add it to the database
-        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Exam");
-        scheduleDB.addExamSchedule(randomSchedule);
+        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Event");
+        scheduleDB.addCEvent(randomSchedule);
 
-        // Call the delete Exam method
+        // Call the delete CEvent method
         Bson filter = Filters.and(
             Filters.eq("userid", userId),
             Filters.eq("title", title),
-            Filters.eq("type", "Exam")
+            Filters.eq("type", "Event")
         );
-        scheduleDB.deleteexam(filter);
+        scheduleDB.deleteCEvent(filter);
         
         // Verify that the schedule was deleted successfully
-        assertFalse(scheduleDB.displaySpecific(title, "Exam"));
+        assertFalse(scheduleDB.displaySpecific(title, "Event"));
     }
     /////////////Statement-based/////////////////
  // No assertion needed for statement coverage; we are mainly checking for exceptions
     @Test
-    void Statement_testCreateExamCoverage() {
+    void Statement_testCreateCEventCoverage() {
         // Create a real Personal_Schedule object
-        Schedule schedule = new Schedule(1, "Songkran", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
+        Schedule schedule = new Schedule(1, "Songkran", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Event");
 
-        // Call the add Exam Schedule method
-        scheduleDB.addExamSchedule(schedule);
-        
+        // Call the add CEvent Schedule method
+        scheduleDB.addCEvent(schedule);
     }
     
     @Test
-    void Statement_testDisplayExamCoverage() {
-        // Call the display Exam method
-        scheduleDB.displayExam();
+    void Statement_testDisplayCEventCoverage() {
+        // Call the display CEvent method
+        scheduleDB.displayCEvent();
     }
     @Test
-    void Statement_testUpdateExamCoverage() {
+    void Statement_testUpdateCEventCoverage() {
         // Create a real Personal_Schedule object
-        Schedule schedule = new Schedule(1, "Songteen", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
+        Schedule schedule = new Schedule(1, "Songteen", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Event");
 
         // Call the updatePersonalSchedule method
         Bson filter = Filters.eq("userid", 1);
-        scheduleDB.updateExam(schedule, filter);
+        scheduleDB.updateCEvent(schedule, filter);
     }
     @Test
-    void Statement_testDeleteExamCoverage() {
+    void Statement_testDeleteCEventCoverage() {
         Bson filter = Filters.eq("title", "Songteen");
-        scheduleDB.deleteexam(filter);
+        scheduleDB.deleteCEvent(filter);
     }
     ////////////////Branch-Based/////////////////////////
     @Test
-    void Branch_testCreateExamScheduleCoverage() {
-        Schedule schedule = new Schedule(1, "PeterParkerBirthday", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
-        scheduleDB.addExamSchedule(schedule);
+    void Branch_testCreateCEventScheduleCoverage() {
+        Schedule schedule = new Schedule(1, "PeterParkerBirthday", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Event");
+        scheduleDB.addCEvent(schedule);
     }
     
     @Test
-    void Branch_testDisplayExamCoverage() {
-        scheduleDB.displayExam();
+    void Branch_testDisplayCEventCoverage() {
+        scheduleDB.displayCEvent();
     }
     @Test
-    void Branch_UpdateExamCoverage() {
-        Schedule schedule = new Schedule(1, "RainTooMuch", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
+    void Branch_UpdateCEventCoverage() {
+        Schedule schedule = new Schedule(1, "RainTooMuch", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Event");
         Bson filter = Filters.eq("userid", 1);
-        scheduleDB.updateExam(schedule, filter);
+        scheduleDB.updateCEvent(schedule, filter);
     }
     @Test
-    void Branch_testDeleteExamCoverage() {
+    void Branch_testDeleteCEventCoverage() {
         Bson filter = Filters.eq("title", "RainTooMuch");
-        scheduleDB.deleteexam(filter);
+        scheduleDB.deleteCEvent(filter);
     }
 }

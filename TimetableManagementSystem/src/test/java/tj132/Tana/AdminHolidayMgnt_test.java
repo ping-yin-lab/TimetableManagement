@@ -1,8 +1,8 @@
-package admin_mgmt_test;
+package tj132.Tana;
 
-import admin_mgmt.tt_admin.Schedule;
-import admin_mgmt.tt_admin.scheduleDatabase;
-import teacher.Personal_Schedule;
+import tj132.Tana.tt_admin.Schedule;
+import tj132.Tana.tt_admin.scheduleDatabase;
+import tj132.Tana.Personal_Schedule;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;

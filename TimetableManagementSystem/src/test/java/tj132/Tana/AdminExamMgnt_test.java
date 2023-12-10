@@ -1,7 +1,8 @@
-package teacher_test;
+package tj132.Tana;
 
-import teacher.Personal_Schedule;
-import teacher.personalmgnt.scheduleDatabase;
+import tj132.Tana.tt_admin.Schedule;
+import tj132.Tana.tt_admin.scheduleDatabase;
+import tj132.Tana.Personal_Schedule;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
@@ -22,7 +23,7 @@ import java.util.random.*;
 
 import org.junit.jupiter.api.Test;
 
-class TeacherTimeOffMgnt_test {
+class AdminExamMgnt_test {
 
 	private scheduleDatabase scheduleDB;
 	private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
@@ -31,54 +32,56 @@ class TeacherTimeOffMgnt_test {
     void setUp() {
         // Assuming you have a method to initialize the scheduleDB, replace it with your actual initialization logic
     	scheduleDB = new scheduleDatabase();
+    	
     	OutputStream outputStreamCaptor = null;
 		System.setOut(new PrintStream(outputStreamCaptor, true, StandardCharsets.UTF_8));
     }
     ///////////////Specification based///////////////////
     @Test
-    void Specification_testCreateTimeOffSchedule() {
-    	Personal_Schedule realSchedule = new Personal_Schedule(1, "CoffeeBreak", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "TimeOff");
-    	scheduleDB.addPersonalSchedule(realSchedule);
-        assertTrue(scheduleDB.displaySpecific("CoffeeBreak", "TimeOff"));
+    void Specification_testCreateExamSchedule() {
+    	Schedule realSchedule = new Schedule(1, "JingleJingle", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
+        scheduleDB.addExamSchedule(realSchedule);
+        assertTrue(scheduleDB.displaySpecific("JingleJingle", "Exam"));
     }
     
     @Test
-    void Specification_testUpdateTimeOffSchedule() {
-    	Personal_Schedule realSchedule = new Personal_Schedule(1, "Lacking", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "TimeOff");
-        scheduleDB.addPersonalSchedule(realSchedule);
-        realSchedule.setSchedulename("Stable");
+    void Specification_testUpdateExamSchedule() {
+        Schedule realSchedule = new Schedule(1, "Slowking", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
+        scheduleDB.addExamSchedule(realSchedule);
+        realSchedule.setSchedulename("FastKing");
         realSchedule.setStarttime(LocalDateTime.now().plusDays(1));
         realSchedule.setEndtime(LocalDateTime.now().plusDays(1).plusHours(2));
         Bson filter = Filters.and(
             Filters.eq("userid", 1),
-            Filters.eq("title", "Lacking"),
-            Filters.eq("type", "TimeOff")
+            Filters.eq("title", "Slowking"),
+            Filters.eq("type", "Exam")
         );
-        scheduleDB.updatePersonalSchedule(realSchedule, filter);
+        scheduleDB.updateExam(realSchedule, filter);
         Bson updatedFilter = Filters.and(
             Filters.eq("userid", 1),
-            Filters.eq("title", "Stable"),
-            Filters.eq("type", "TimeOff")
+            Filters.eq("title", "FastKing"),
+            Filters.eq("type", "Exam")
         );
-        assertTrue(scheduleDB.displaySpecific("Stable", "TimeOff"));
+        assertTrue(scheduleDB.displaySpecific("FastKing", "Exam"));
     }
-    //Delete TimeOff schedule
+    //Delete Exam schedule
     @Test
-    void Specification_testDeleteTimeOffSchedule() {
-    	Personal_Schedule realSchedule = new Personal_Schedule(1, "Poochyeena", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "TimeOff");
-        scheduleDB.addPersonalSchedule(realSchedule);
+    void Specification_testDeleteExamSchedule() {
+        Schedule realSchedule = new Schedule(1, "Poochyeena", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
+        scheduleDB.addExamSchedule(realSchedule);
         Bson filter = Filters.and(
             Filters.eq("userid", 1),
             Filters.eq("title", "Poochyeena"),
-            Filters.eq("type", "TimeOff")
+            Filters.eq("type", "Exam")
         );
-        scheduleDB.deleteSchedule("Poochyeena","TimeOff");
-        assertFalse(scheduleDB.displaySpecific("Poochyeena","TimeOff"));
+        scheduleDB.deleteexam(filter);
+        long count = scheduleDB.SDCollection.countDocuments(filter);
+        assertEquals(0, count, "Exam schedule should be deleted from the database");
     }
-    //Display TimeOff schedule
+    //Display Exam schedule
     @Test
-    void Specification_testDisplayTimeOffSchedule() {
-        assertTrue(scheduleDB.displaySpecific("CoffeeBreak","TimeOff"));
+    void Specification_testDisplayExamSchedule() {
+        assertTrue(scheduleDB.displayResult("Exam"));
     }
     
     /////////////random-based //////////////////////////////
@@ -101,24 +104,24 @@ class TeacherTimeOffMgnt_test {
     
     //Random create
     @Test
-    void testCreateRandomTimeOffSchedule() {
+    void testCreateRandomExamSchedule() {
         // Generate random inputs
         int userId = generateRandomUserId();
         String title = generateRandomTitle();
         LocalDateTime startTime = generateRandomStartTime();
         LocalDateTime endTime = generateRandomEndTime();
-        Personal_Schedule randomSchedule = new Personal_Schedule(userId, title, startTime, endTime, "TimeOff");
-        scheduleDB.addPersonalSchedule(randomSchedule);
+        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Exam");
+        scheduleDB.addExamSchedule(randomSchedule);
         Bson filter = Filters.and(
             Filters.eq("userid", userId),
             Filters.eq("title", title),
-            Filters.eq("type", "TimeOff")
+            Filters.eq("type", "Exam")
         );
-        assertTrue(scheduleDB.displaySpecific(title, "TimeOff"));
+        assertTrue(scheduleDB.displaySpecific(title, "Exam"));
     }
     //Random Update
     @Test
-    void testUpdateRandomTimeOffSchedule() {
+    void testUpdateRandomExamSchedule() {
         // Generate random inputs
         int userId = generateRandomUserId();
         String title = generateRandomTitle();
@@ -126,8 +129,8 @@ class TeacherTimeOffMgnt_test {
         LocalDateTime endTime = generateRandomEndTime();
 
         // Create a real Personal_Schedule object and add it to the database
-        Personal_Schedule randomSchedule = new Personal_Schedule(userId, title, startTime, endTime, "TimeOff");
-        scheduleDB.addPersonalSchedule(randomSchedule);
+        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Exam");
+        scheduleDB.addExamSchedule(randomSchedule);
 
         // Generate random data for update
         String updatedTitle = generateRandomTitle();
@@ -141,22 +144,23 @@ class TeacherTimeOffMgnt_test {
         Bson filter = Filters.and(
             Filters.eq("userid", userId),
             Filters.eq("title", title),
-            Filters.eq("type", "TimeOff")
+            Filters.eq("type", "Exam")
         );
-        scheduleDB.updatePersonalSchedule(randomSchedule, filter);
+        scheduleDB.updateExam(randomSchedule, filter);
 
         // Verify that the schedule was updated successfully
         Bson updatedFilter = Filters.and(
             Filters.eq("userid", userId),
             Filters.eq("title", updatedTitle),
-            Filters.eq("type", "TimeOff")
+            Filters.eq("type", "Exam")
         );
-        assertTrue(scheduleDB.displaySpecific(updatedTitle,"TimeOff"));
+        long count = scheduleDB.SDCollection.countDocuments(updatedFilter);
+        assertEquals(1, count, "Exam schedule should be updated in the database");
     }
 
     //Random delete
     @Test
-    void testDeleteRandomTimeOff() {
+    void testDeleteRandomExam() {
         // Generate random inputs
         int userId = generateRandomUserId();
         String title = generateRandomTitle();
@@ -164,73 +168,71 @@ class TeacherTimeOffMgnt_test {
         LocalDateTime endTime = generateRandomEndTime();
 
         // Create a real Personal_Schedule object and add it to the database
-        Personal_Schedule randomSchedule = new Personal_Schedule(userId, title, startTime, endTime, "TimeOff");
-        scheduleDB.addPersonalSchedule(randomSchedule);
+        Schedule randomSchedule = new Schedule(userId, title, startTime, endTime, "Exam");
+        scheduleDB.addExamSchedule(randomSchedule);
 
-        // Call the delete TimeOff method
+        // Call the delete Exam method
         Bson filter = Filters.and(
             Filters.eq("userid", userId),
             Filters.eq("title", title),
-            Filters.eq("type", "TimeOff")
+            Filters.eq("type", "Exam")
         );
-        scheduleDB.deleteSchedule(title,"TimeOff");
+        scheduleDB.deleteexam(filter);
         
         // Verify that the schedule was deleted successfully
-        assertFalse(scheduleDB.displaySpecific(title, "TimeOff"));
+        assertFalse(scheduleDB.displaySpecific(title, "Exam"));
     }
     /////////////Statement-based/////////////////
  // No assertion needed for statement coverage; we are mainly checking for exceptions
     @Test
-    void Statement_testCreateTimeOffCoverage() {
+    void Statement_testCreateExamCoverage() {
         // Create a real Personal_Schedule object
-    	Personal_Schedule schedule = new Personal_Schedule(1, "Songkran", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "TimeOff");
+        Schedule schedule = new Schedule(1, "Songkran", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
 
-        // Call the add TimeOff Schedule method
-        scheduleDB.addPersonalSchedule(schedule);
+        // Call the add Exam Schedule method
+        scheduleDB.addExamSchedule(schedule);
+        
     }
     
     @Test
-    void Statement_testDisplayTimeOffCoverage() {
-        // Call the display TimeOff method
-        scheduleDB.displaySchedule();
-        scheduleDB.displaySchedulewithID();
-        scheduleDB.displayTimeoff();
+    void Statement_testDisplayExamCoverage() {
+        // Call the display Exam method
+        scheduleDB.displayExam();
     }
     @Test
-    void Statement_testUpdateTimeOffCoverage() {
+    void Statement_testUpdateExamCoverage() {
         // Create a real Personal_Schedule object
-    	Personal_Schedule schedule = new Personal_Schedule(1, "Songteen", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "TimeOff");
+        Schedule schedule = new Schedule(1, "Songteen", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
 
         // Call the updatePersonalSchedule method
         Bson filter = Filters.eq("userid", 1);
-        scheduleDB.updatePersonalSchedule(schedule, filter);
+        scheduleDB.updateExam(schedule, filter);
     }
     @Test
-    void Statement_testDeleteTimeOffCoverage() {
+    void Statement_testDeleteExamCoverage() {
         Bson filter = Filters.eq("title", "Songteen");
-        scheduleDB.deleteSchedule("Songkran","TimeOff");
+        scheduleDB.deleteexam(filter);
     }
     ////////////////Branch-Based/////////////////////////
     @Test
-    void Branch_testCreateTimeOffScheduleCoverage() {
-    	Personal_Schedule schedule = new Personal_Schedule(1, "PeterParkerBirthday", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "TimeOff");
-        scheduleDB.addPersonalSchedule(schedule);
+    void Branch_testCreateExamScheduleCoverage() {
+        Schedule schedule = new Schedule(1, "PeterParkerBirthday", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
+        scheduleDB.addExamSchedule(schedule);
     }
     
     @Test
-    void Branch_testDisplayTimeOffCoverage() {
-        scheduleDB.displaySchedule();
+    void Branch_testDisplayExamCoverage() {
+        scheduleDB.displayExam();
     }
     @Test
-    void Branch_UpdateTimeOffCoverage() {
-    	Personal_Schedule schedule = new Personal_Schedule(1, "RainTooMuch", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "TimeOff");
+    void Branch_UpdateExamCoverage() {
+        Schedule schedule = new Schedule(1, "RainTooMuch", LocalDateTime.now(), LocalDateTime.now().plusHours(2), "Exam");
         Bson filter = Filters.eq("userid", 1);
-        scheduleDB.updatePersonalSchedule(schedule, filter);
+        scheduleDB.updateExam(schedule, filter);
     }
     @Test
-    void Branch_testDeleteTimeOffCoverage() {
+    void Branch_testDeleteExamCoverage() {
         Bson filter = Filters.eq("title", "RainTooMuch");
-        scheduleDB.deleteSchedule("RainTooMuch","TimeOff");
+        scheduleDB.deleteexam(filter);
     }
 }
-

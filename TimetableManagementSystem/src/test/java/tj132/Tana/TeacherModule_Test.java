@@ -1,11 +1,12 @@
-package teacher_test;
+package tj132.Tana;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import teacher.personalmgnt.moduleDatabase;
+
+import tj132.Tana.personalmgnt.moduleDatabase;
 
 class TeacherModule_Test {
 

@@ -1,7 +1,5 @@
-package teacher_test;
+package tj132.Tana;
 
-import teacher.personalmgnt.contactDatabase;
-import teacher.personalmgnt.contact;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
@@ -9,6 +7,10 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.junit.jupiter.api.Test;
 import com.mongodb.client.model.Filters;
+
+import tj132.Tana.personalmgnt.contact;
+import tj132.Tana.personalmgnt.contactDatabase;
+
 import java.util.Random;
 
 class TeacherContactManagement_test {

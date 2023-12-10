@@ -1,7 +1,7 @@
-package admin_mgmt_test;
+package tj132.Tana;
 
-import admin_mgmt.tt_admin.contact;
-import admin_mgmt.tt_admin.contactDatabase;
+import tj132.Tana.tt_admin.contact;
+import tj132.Tana.tt_admin.contactDatabase;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
