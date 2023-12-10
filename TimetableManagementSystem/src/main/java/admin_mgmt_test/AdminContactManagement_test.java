@@ -1,7 +1,7 @@
-package teacher_test;
+package admin_mgmt_test;
 
-import teacher.personalmgnt.contactDatabase;
-import teacher.personalmgnt.contact;
+import admin_mgmt.tt_admin.contact;
+import admin_mgmt.tt_admin.contactDatabase;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.mongodb.client.model.Filters;
 import java.util.Random;
 
-class TeacherContactManagement_test {
+class AdminContactManagement_test {
 	
 	////////////Specification-Based Test cases/////////////////////////////
 	//Add new contact
@@ -19,7 +19,7 @@ class TeacherContactManagement_test {
     public void Specification_testAddNewContact_ValidInput() {
         // Arrange
 		contactDatabase contactDB = new contactDatabase();
-		contact contact = new contact("Johnathan", "Teacher", "john@example.com", "1231231222");
+		contact contact = new contact("Johnathan", "Admin", "john@example.com", "1231231222");
         // Act
         String add_result = contactDB.addContact(contact);
 
@@ -32,7 +32,7 @@ class TeacherContactManagement_test {
     public void Specification_testAddNewContact_DuplicationInput() {
         // Arrange
 		contactDatabase contactDB = new contactDatabase();
-		contact contact = new contact("Johnathan", "Teacher", "john@example.com", "1231231222");
+		contact contact = new contact("Johnathan", "Admin", "john@example.com", "1231231222");
         // Act
         String adddup_result = contactDB.addContact(contact);
         // Assert
@@ -50,17 +50,17 @@ class TeacherContactManagement_test {
 		contactDatabase contactDB = new contactDatabase();
 
         // Add a contact to the database
-		contact originalContact = new contact("Lewis Doe", "Teacher", "lewis@example.com", "1234567890");
+		contact originalContact = new contact("Coral", "Admin", "lewis@example.com", "1234567890");
         contactDB.addContact(originalContact);
 
         // Act
         // Update the contact
-        contact updatedContact = new contact("Lewis Doe", "Teacher", "newemail@example.com", "9876543210");
+        contact updatedContact = new contact("Coral", "Admin", "newemail@example.com", "9876543210");
         contactDB.updateContact(updatedContact);
 
         // Assert
         // Retrieve the updated contact from the database
-        Document retrievedContact = contactDB.displayContactspecific("Lewis Doe");
+        Document retrievedContact = contactDB.displayContactspecific("Coral");
         
         // Ensure that the contact details are updated correctly
         assertEquals(updatedContact.getEmail(), retrievedContact.get("email"));
@@ -74,7 +74,7 @@ class TeacherContactManagement_test {
 
         // Act
         // Attempt to update a contact that doesn't exist
-        contact nonExistingContact = new contact("Non Existing", "Teacher", "nonexisting@example.com", "1234567890");
+        contact nonExistingContact = new contact("NonExisting", "Admin", "nonexisting@example.com", "1234567890");
         
         // Assert
         // Ensure that the update operation does not throw an exception or cause any unexpected behavior
@@ -88,17 +88,17 @@ class TeacherContactManagement_test {
         contactDatabase contactDB = new contactDatabase();
 
         // Add a contact to the database
-        contact contactToDelete = new contact("John Doe", "Teacher", "john@example.com", "1234567890");
+        contact contactToDelete = new contact("Dampling", "Admin", "john@example.com", "1234567890");
         contactDB.addContact(contactToDelete);
 
         // Act
         // Delete the contact
-        Bson filter = Filters.eq("name", "John Doe");
+        Bson filter = Filters.eq("name", "Dampling");
         contactDB.deletecontact(filter);
 
         // Assert
         // Ensure that the contact is deleted
-        Document tester = contactDB.displayContactspecific("John Doe");
+        Document tester = contactDB.displayContactspecific("Dampling");
         assertEquals(tester.size(),0);
     }
 
@@ -139,7 +139,7 @@ class TeacherContactManagement_test {
         String randomEmail = "random" + random.nextInt(1000) + "@example.com";
         String randomPhone = String.valueOf(1000000000 + random.nextInt(900000000));
         
-  		contact contact = new contact(randomName, "Teacher", randomEmail, randomPhone);
+  		contact contact = new contact(randomName, "Admin", randomEmail, randomPhone);
           // Act
           String add_result = contactDB.addContact(contact);
 
@@ -166,7 +166,7 @@ class TeacherContactManagement_test {
 
         // Act
         assertDoesNotThrow(() -> {
-            contact contact = new contact("HandsomeLu", "Teacher", "toohandsometohandle@example.com", "88888888");
+            contact contact = new contact("AdminLu", "Admin", "toohandsometohandle@example.com", "88888888");
             contactDB.addContact(contact);
         });
     }
@@ -178,11 +178,11 @@ class TeacherContactManagement_test {
 
         // Act
         assertDoesNotThrow(() -> {
-            contact contact = new contact("King", "Teacher", "kingy@example.com", "75213456");
+            contact contact = new contact("King", "Admin", "kingy@example.com", "75213456");
             contactDB.addContact(contact);
 
             // Update the contact
-            contact updatedContact = new contact("King", "Teacher", "newkingy@example.com", "789232");
+            contact updatedContact = new contact("King", "Admin", "newkingy@example.com", "789232");
             contactDB.updateContact(updatedContact);
         });
     }
@@ -194,7 +194,7 @@ class TeacherContactManagement_test {
 
         // Act
         assertDoesNotThrow(() -> {
-            contact contact = new contact("JohnWick", "Teacher", "john@example.com", "1234567890");
+            contact contact = new contact("JohnWick", "Admin", "john@example.com", "1234567890");
             contactDB.addContact(contact);
             Bson filter = Filters.eq("name","JohnWick");
             // Delete the contact
@@ -228,12 +228,12 @@ class TeacherContactManagement_test {
         // Act
         assertDoesNotThrow(() -> {
             // Test the true branch: add a new contact
-            contact newContact = new contact("Peterberg", "Teacher", "peter@example.com", "1231231");
+            contact newContact = new contact("SamSmith", "Admin", "peter@example.com", "1231231");
             contactDB.addContact(newContact);
             Document queryresult = contactDB.displayContactspecific("Johnathan");
             //assertEquals(queryresult.get("name"),"Peterberg");
             // Test the false branch: add an existing contact (should throw an exception)
-            contact existingContact = new contact("Peterberg", "Teacher", "peterpeter@example.com", "323443434");
+            contact existingContact = new contact("SamSmith", "Admin", "peterpeter@example.com", "323443434");
             String adddup_result = contactDB.addContact(existingContact);
         });
     }
@@ -243,7 +243,7 @@ class TeacherContactManagement_test {
         contactDatabase contactDB = new contactDatabase();
         // Act
         assertDoesNotThrow(() -> {
-            contact contact = new contact("Pikachu", "Teacher", "pikapika@example.com", "5454545");
+            contact contact = new contact("Pikachu", "Admin", "pikapika@example.com", "5454545");
             contactDB.addContact(contact);
             Bson filter = Filters.eq("name", "Pikachu");
             // Test the true branch: delete an existing contact
