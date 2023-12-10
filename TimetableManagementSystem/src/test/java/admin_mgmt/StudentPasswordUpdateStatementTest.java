@@ -1,5 +1,10 @@
 package admin_mgmt;
 
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,51 +12,58 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class StudentPasswordUpdateTest {
+public class StudentPasswordUpdateStatementTest {
 
     private StudentPasswordUpdate studentPasswordUpdate;
+    private InputStream sysInBackup;
 
     @Before
     public void setUp() {
         studentPasswordUpdate = new StudentPasswordUpdate();
+        sysInBackup = System.in;
     }
 
     @After
     public void tearDown() {
+        System.setIn(sysInBackup);
         // Clean up any resources if needed
     }
 
     @Test
     public void testSuccessfulPasswordUpdate() {
         // Mocking Scanner to provide input
-        InputStream inputStream = new ByteArrayInputStream("TestUser\nCurrentPassword\nNewPassword\n".getBytes());
+        String input = "TestUser\nCurrentPassword\nNewPassword\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);
 
         // Run the test
         studentPasswordUpdate.StudentPasswordUpdateStart();
 
-        // You may want to assert or verify the success condition in your actual implementation
+        // Assertions
+        // You may want to add assertions based on your implementation
     }
 
     @Test
     public void testInvalidUsernameOrPassword() {
         // Mocking Scanner to provide input
-        InputStream inputStream = new ByteArrayInputStream("NonExistingUser\nWrongPassword\n".getBytes());
+        String input = "NonExistingUser\nWrongPassword\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);
 
         // Run the test
         studentPasswordUpdate.StudentPasswordUpdateStart();
 
-        // You may want to assert or verify the failure condition in your actual implementation
+        // Assertions
+        // You may want to add assertions based on your implementation
     }
 
     @Test
     public void testUnexpectedError() {
         // Mocking Scanner to provide input
-        InputStream inputStream = new ByteArrayInputStream("TestUser\nCurrentPassword\nNewPassword\n".getBytes());
+        String input = "TestUser\nCurrentPassword\nNewPassword\n";
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         System.setIn(inputStream);
 
         // Modifying the MongoDB connection to simulate an unexpected error
@@ -60,6 +72,7 @@ public class StudentPasswordUpdateTest {
         // Run the test
         studentPasswordUpdate.StudentPasswordUpdateStart();
 
-        // You may want to assert or verify the handling of unexpected errors in your actual implementation
+        // Assertions
+        // You may want to add assertions based on your implementation
     }
 }

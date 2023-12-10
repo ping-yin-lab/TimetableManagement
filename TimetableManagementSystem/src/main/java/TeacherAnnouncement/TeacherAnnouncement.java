@@ -27,9 +27,7 @@ public class TeacherAnnouncement {
             String announcement = scanner.nextLine();
            
             insertAnnouncement(subject, announcement);
-
-            
-            mongoClient.close();
+ //           mongoClient.close();
     }
 
     static void initializeMongoDB() {
@@ -48,7 +46,7 @@ public class TeacherAnnouncement {
         }
     }
 
-    private static void insertAnnouncement(String subject, String announcement) {
+    public static void insertAnnouncement(String subject, String announcement) {
         try {
           
             Document announcementDocument = new Document()
@@ -58,7 +56,7 @@ public class TeacherAnnouncement {
             
             announcementCollection.insertOne(announcementDocument);
 
-            System.out.println("Announcement published!");
+            //System.out.println("Announcement published!");
         } catch (Exception e) {
             System.err.println("Error publishing announcement: " + e.getMessage());
         }
