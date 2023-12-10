@@ -28,8 +28,6 @@ public class FeedbackDatabaseRandomTest {
 
         // Add feedback to the database
         feedbackDatabase.addFeedback(feedbackToAdd);
-
-        // TODO: Add assertions or additional checks based on your requirements
     }
 
     @Test
@@ -43,20 +41,14 @@ public class FeedbackDatabaseRandomTest {
 
         // Update the feedback
         feedbackDatabase.updateFeedback(feedbackToAdd.getStuId(), feedbackToAdd.getTeacherId(), newReply);
-
-        // TODO: Add assertions or additional checks based on your requirements
     }
 
     @Test
     public void testDeleteFeedbackRandom() {
-        // Add a sample feedback to the database for testing
+       
         Feedback feedbackToAdd = generateRandomFeedback();
         feedbackDatabase.addFeedback(feedbackToAdd);
-
-        // Delete the feedback
         feedbackDatabase.deleteFeedback(feedbackToAdd.getStuId(), feedbackToAdd.getTeacherId());
-
-        // TODO: Add assertions or additional checks based on your requirements
     }
 
     // Helper method to generate random feedback data
