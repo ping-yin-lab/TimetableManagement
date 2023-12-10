@@ -36,8 +36,6 @@ public class StatementTestModule {
     public void testAddModuleFeedback() {
         ModuleFeedback moduleFeedbackToAdd = new ModuleFeedback("123", "Math", "Good module", "5");
         moduleFeedbackDatabase.addModuleFeedback(moduleFeedbackToAdd);
-
-        // Verify that the feedback was added successfully
         assertTrue(outContent.toString().contains("Module Feedback added successfully!"));
     }
 
@@ -59,8 +57,6 @@ public class StatementTestModule {
     public void testDisplayEmptyModuleFeedback() {
         // Clear the module feedback collection to ensure it's empty
         moduleFeedbackDatabase.clearModuleFeedbackCollection();
-
-        // Redirect System.out to capture the output
         moduleFeedbackDatabase.displayModuleFeedback();
 
         // Verify the output
