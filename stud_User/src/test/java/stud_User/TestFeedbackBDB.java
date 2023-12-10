@@ -3,7 +3,7 @@ package stud_User;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-//specification testing.......................
+
 public class TestFeedbackBDB {
 
 	@Test
@@ -13,8 +13,6 @@ public class TestFeedbackBDB {
         // Test Case 1: Add a new feedback
         Feedback newFeedback = new Feedback("st23", "te56", "Good job!", "Thank you!");
         feedbackDatabase.addFeedback(newFeedback);
-
-        // You may want to check the database or console output to verify the success of adding feedback
     }
 
     @Test
@@ -26,8 +24,6 @@ public class TestFeedbackBDB {
         String teacherId = "te56";
         String newReply = "Updated reply!";
         feedbackDatabase.updateFeedback(studentId, teacherId, newReply);
-
-        // You may want to check the database or console output to verify the success of updating feedback
     }
 
     @Test
@@ -38,8 +34,6 @@ public class TestFeedbackBDB {
         String studentId = "st23";
         String teacherId = "te56";
         feedbackDatabase.deleteFeedback(studentId, teacherId);
-
-        // You may want to check the database or console output to verify the success of deleting feedback
     }
 
     @Test
@@ -51,6 +45,4 @@ public class TestFeedbackBDB {
     }
 }
 
-
-//random testing..................
 
