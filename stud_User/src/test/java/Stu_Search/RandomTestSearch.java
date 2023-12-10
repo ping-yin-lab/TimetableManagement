@@ -77,8 +77,6 @@ public class RandomTestSearch {
 	                "2. Exit\n" +
 	                "Enter your choice: Enter Student ID: Given Student ID not found.\n" +
 	                "Exiting the program.\n";
-
-	        // Print both expected and actual outputs
 	        System.out.println("Expected Output:");
 	        System.out.println(expectedOutput);
 	        System.out.println("Actual Output:");
@@ -86,8 +84,5 @@ public class RandomTestSearch {
 
 	        
 	    }
-
-
-	    // Additional test cases can be added to cover more scenarios
 	}
 
