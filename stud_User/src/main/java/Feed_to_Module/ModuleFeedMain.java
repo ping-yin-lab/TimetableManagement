@@ -131,7 +131,7 @@ public class ModuleFeedMain {
 
                 case 3:
                     moduleFeedbackDatabase.shutdown();
-
+                    
                 default:
                     System.out.println("Invalid choice. Please enter a valid option.");
             }
