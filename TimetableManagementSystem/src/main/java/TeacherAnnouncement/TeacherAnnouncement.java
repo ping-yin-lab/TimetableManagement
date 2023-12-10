@@ -16,8 +16,8 @@ public class TeacherAnnouncement {
     private static MongoDatabase database;
     private static MongoCollection<Document> announcementCollection;
 
-    public static void main(String[] args) {
-        try {
+    public void TeacherAnnouncementStart() {
+        
             initializeMongoDB(); 
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter the subject of announcement: ");
@@ -30,12 +30,9 @@ public class TeacherAnnouncement {
 
             
             mongoClient.close();
-        } catch (Exception e) {
-            System.err.println("An unexpected error occurred: " + e.getMessage());
-        }
     }
 
-    private static void initializeMongoDB() {
+    static void initializeMongoDB() {
     	try {
             
             String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
@@ -68,14 +65,14 @@ public class TeacherAnnouncement {
     }
     public static void getAnnouncements() {
         try {
-            
+        	initializeMongoDB();
             FindIterable<Document> announcements = announcementCollection.find();
 
             
             System.out.println("Announcements:");
             for (Document announcement : announcements) {
                 System.out.println("Subject : " + announcement.getString("subject"));
-                System.out.println("Announcement : " + announcement.getString("Announcement"));
+                System.out.println("Announcement : " + announcement.getString("announcement"));
                 System.out.println("--------------");
             }
         } catch (Exception e) {

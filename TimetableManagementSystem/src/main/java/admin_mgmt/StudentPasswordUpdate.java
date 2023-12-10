@@ -13,11 +13,11 @@ public class StudentPasswordUpdate {
     private static MongoDatabase database;
     private static MongoCollection<Document> studentCollection;
     
-    public static void main(String[] args) {
+    public static void StudentPasswordUpdateStart() {
         try {
             initializeMongoDB();
 
-            // Take input from the user
+         
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter username: ");
             String username = scanner.nextLine();
@@ -25,13 +25,13 @@ public class StudentPasswordUpdate {
             System.out.print("Enter current password: ");
             String currentPassword = scanner.nextLine();
 
-            // Check if the user exists and the current password is correct
+            
             Document userDocument = studentCollection.find(Filters.eq("username", username)).first();
             if (userDocument != null && userDocument.getString("password").equals(currentPassword)) {
                 System.out.print("Enter new password: ");
                 String newPassword = scanner.nextLine();
 
-                // Update the password in the database
+               
                 updatePassword(username, newPassword);
 
                 System.out.println("Password updated successfully!");

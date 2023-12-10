@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import java.util.Random;
 
-public class StudentLoginTest {
+public class TeacherLoginTest {
 
     private static InputStream originalSystemIn;
     private static Scanner scanner;
@@ -36,7 +36,7 @@ public class StudentLoginTest {
         String input = "1\nRandomUsername64\nRandomPassword40\n2\n";
         simulateUserInput(input);
 
-        StudentLogin.studentLoginStart();
+        TeacherLogin.teacherLoginStart();
         Session.setCurrentUser("RandomUsername64");
         assertEquals("RandomUsername64", Session.getCurrentUser());
     }
@@ -47,7 +47,7 @@ public class StudentLoginTest {
         String input = "1\n@123@\n1234\n2\n";
         simulateUserInput(input);
 
-        StudentLogin.studentLoginStart();									
+        TeacherLogin.teacherLoginStart();									
 
         assertNull(Session.getCurrentUser());
     }
@@ -58,7 +58,7 @@ public class StudentLoginTest {
         String input = "2\n";
         simulateUserInput(input);
 
-        StudentLogin.studentLoginStart();
+        TeacherLogin.teacherLoginStart();
 
         assertNull(Session.getCurrentUser());
     }
@@ -70,7 +70,7 @@ public class StudentLoginTest {
         simulateUserInput(input);
 
         try {
-            StudentLogin.studentLoginStart();
+            TeacherLogin.teacherLoginStart();
         } catch (NoSuchElementException e) {
             // Expected exception
         }
@@ -82,7 +82,7 @@ public class StudentLoginTest {
         String input = "1\nhero\npassword\n2\n";
         simulateUserInput(input);
 
-        StudentLogin.studentLoginStart();
+        TeacherLogin.teacherLoginStart();
         
         assertNull(Session.getCurrentUser());
     }
@@ -93,7 +93,7 @@ public class StudentLoginTest {
         String input = "1\nSTpfy11\n143143\n2\n";
         simulateUserInput(input);
 
-        StudentLogin.studentLoginStart();
+        TeacherLogin.teacherLoginStart();
         
         assertNull(Session.getCurrentUser());
     }
@@ -108,7 +108,7 @@ public class StudentLoginTest {
         String input = "1\n" + randomUsername + "\n" + randomPassword + "\n2\n";
         simulateUserInput(input);
 
-        StudentLogin.studentLoginStart();
+        TeacherLogin.teacherLoginStart();
         assertEquals(randomUsername, Session.getCurrentUser());
     }
     @Test
@@ -119,7 +119,7 @@ public class StudentLoginTest {
 	    String input = "1\n2\n";
 	    simulateUserInput(input);
 
-	    StudentLogin.studentLoginStart();
+	    TeacherLogin.teacherLoginStart();
 
 	}
     
@@ -131,7 +131,7 @@ public class StudentLoginTest {
 	    String input = "2\n";
 	    simulateUserInput(input);
 
-	    StudentLogin.studentLoginStart();
+	    TeacherLogin.teacherLoginStart();
 
 	    assertNull(Session.getCurrentUser());
 	}
@@ -157,6 +157,6 @@ public class StudentLoginTest {
 	}
 
 	public static void setScanner(Scanner scanner) {
-		StudentLoginTest.scanner = scanner;
+		TeacherLoginTest.scanner = scanner;
 	}
 }

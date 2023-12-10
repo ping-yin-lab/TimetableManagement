@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import TeacherAnnouncement.TeacherAnnouncement;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -15,7 +16,7 @@ public class TeacherLogin {
     private static MongoDatabase database;
     private static MongoCollection<Document> teacherCollection;
 
-    public static void main(String[] args) {
+    public static void teacherLoginStart() {
         try {
             initializeMongoDB();
 
@@ -121,9 +122,28 @@ public class TeacherLogin {
     private static void performStudentOperations() {
         try {
             System.out.println("Perform Teacher Operations...");
-            // Add your student-specific operations here
-        } catch (Exception e) {
-            System.err.println("An unexpected error occurred during student operations: " + e.getMessage());
+            TeacherAnnouncement teacherAnnouncement = new TeacherAnnouncement();
+            System.out.println("Techer operations:");
+            System.out.println("1. Upload Announcement");
+            System.out.println("2. Read Announcements");
+            Scanner opscanner = new Scanner(System.in);
+            System.out.print("Choose an option: ");
+            int choice;
+            choice = opscanner.nextInt();
+            opscanner.nextLine(); 
+            
+            switch (choice) {
+            case 1:
+                teacherAnnouncement.TeacherAnnouncementStart();
+                break;
+            case 2:
+            	teacherAnnouncement.getAnnouncements();
+                break;
+            default:
+                System.out.println("Invalid option. Please choose a valid option.");
+        }
+        }catch (Exception e) {
+            System.err.println("An unexpected error occurred during Announcement operations: " + e.getMessage());
         }
     }
 

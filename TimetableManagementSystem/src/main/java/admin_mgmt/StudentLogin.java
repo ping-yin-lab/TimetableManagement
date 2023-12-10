@@ -14,7 +14,7 @@ public class StudentLogin {
     private static MongoDatabase database;
     private static MongoCollection<Document> studentCollection;
     
-    public static void main(String[] args) {
+    public static void studentLoginStart() {
     	
         try {
             initializeMongoDB();
@@ -40,6 +40,7 @@ public class StudentLogin {
 
                     switch (choice) {
                         case 1:
+                        	
                             login(studentCollection);
                             break;
                         case 2:

@@ -15,11 +15,11 @@ public class TeacherPasswordUpdate {
     private static MongoDatabase database;
     private static MongoCollection<Document> teacherCollection;
     
-    public static void main(String[] args) {
+    public static void TeacherPasswordUpdateStart() {
         try {
             initializeMongoDB();
 
-            // Take input from the user
+           
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter username: ");
             String username = scanner.nextLine();
@@ -27,13 +27,13 @@ public class TeacherPasswordUpdate {
             System.out.print("Enter current password: ");
             String currentPassword = scanner.nextLine();
 
-            // Check if the user exists and the current password is correct
+            
             Document userDocument = teacherCollection.find(Filters.eq("username", username)).first();
             if (userDocument != null && userDocument.getString("password").equals(currentPassword)) {
                 System.out.print("Enter new password: ");
                 String newPassword = scanner.nextLine();
 
-                // Update the password in the database
+               
                 updatePassword(username, newPassword);
 
                 System.out.println("Password updated successfully!");
@@ -41,7 +41,7 @@ public class TeacherPasswordUpdate {
                 System.out.println("Invalid username or password. Password update failed.");
             }
 
-            // Close MongoDB connection
+            
             mongoClient.close();
         } catch (Exception e) {
             System.err.println("An unexpected error occurred: " + e.getMessage());
