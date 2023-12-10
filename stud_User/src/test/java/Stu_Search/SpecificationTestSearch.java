@@ -68,6 +68,4 @@ public class SpecificationTestSearch {
                                 "Exiting the program.\n";
         
     }
-
-    // Additional test cases can be added to cover more scenarios
 }
