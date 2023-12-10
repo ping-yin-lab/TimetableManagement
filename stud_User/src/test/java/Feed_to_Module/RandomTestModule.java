@@ -47,11 +47,6 @@ public class RandomTestModule {
 
 	        moduleFeedbackDatabase.addModuleFeedback(feedback1);
 	        moduleFeedbackDatabase.addModuleFeedback(feedback2);
-
-	        // Assuming you have a way to retrieve the added feedback from the database
-	        // You can check if both feedback are present in the database
-
-	        // For demonstration purposes, we'll just assert that the method didn't throw an exception
 	        assertNotNull(feedback1);
 	        assertNotNull(feedback2);
 	    }
@@ -66,9 +61,6 @@ public class RandomTestModule {
 	    public void testInvalidRating() {
 	        ModuleFeedback invalidRatingFeedback = new ModuleFeedback("S123", "Module1", "Feedback", "6");
 	        moduleFeedbackDatabase.addModuleFeedback(invalidRatingFeedback);
-
-	        // Assuming you have a way to handle invalid ratings in your implementation
-	        // For demonstration purposes, we'll just assert that the method didn't throw an exception
 	        assertNotNull(invalidRatingFeedback);
 	    }
 
@@ -76,9 +68,6 @@ public class RandomTestModule {
 	    public void testInvalidModuleName() {
 	        ModuleFeedback invalidModuleNameFeedback = new ModuleFeedback("S456", "", "Feedback", "4");
 	        moduleFeedbackDatabase.addModuleFeedback(invalidModuleNameFeedback);
-
-	        // Assuming you have a way to handle invalid module names in your implementation
-	        // For demonstration purposes, we'll just assert that the method didn't throw an exception
 	        assertNotNull(invalidModuleNameFeedback);
 	    }
 
@@ -93,6 +82,5 @@ public class RandomTestModule {
 	        return new ModuleFeedback(studentId, moduleName, feedbackText, rating);
 	    }
 
-	    // Add more test cases based on the specifications and behavior of the methods
 	}
 
