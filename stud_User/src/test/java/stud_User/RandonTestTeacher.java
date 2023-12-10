@@ -24,17 +24,12 @@ public class RandonTestTeacher {
 
         // Add feedback to the database
         feedbackDatabase.addFeedback(feedbackToAdd);
-
-        // TODO: Assert the expected outcome based on the implementation
-        // For example, check if the feedback was added successfully in the database
     }
 
     @Test
     public void testDisplayFeedback() {
         // Display feedback (no assertions as this is a display method)
         feedbackDatabase.displayFeedback();
-
-        // TODO: Manually verify the output on the console
     }
 
     @Test
@@ -45,9 +40,6 @@ public class RandonTestTeacher {
 
         // Update the feedback
         feedbackDatabase.updateFeedback("student2", "teacher2", "Reviewed and addressed");
-
-        // TODO: Assert the expected outcome based on the implementation
-        // For example, check if the feedback was updated successfully in the database
     }
 
     @Test
@@ -58,18 +50,13 @@ public class RandonTestTeacher {
 
         // Delete the feedback
         feedbackDatabase.deleteFeedback("student3", "teacher3");
-
-        // TODO: Assert the expected outcome based on the implementation
-        // For example, check if the feedback was deleted successfully from the database
     }
 
     @Test
     public void testDeleteNonexistentFeedback() {
-        // Try to delete feedback that doesn't exist
+        // Trying to delete feedback that doesn't exist
         feedbackDatabase.deleteFeedback("nonexistentStudent", "nonexistentTeacher");
 
-        // TODO: Assert the expected outcome based on the implementation
-        // For example, check if the system handles the deletion of nonexistent feedback gracefully
     }
 }
 
