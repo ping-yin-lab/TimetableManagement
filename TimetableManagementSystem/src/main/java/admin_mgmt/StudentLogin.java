@@ -8,33 +8,18 @@ import org.bson.Document;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-class Session {
-    private static String currentUser;
-
-    static String getCurrentUser() {
-        return currentUser;
-    }
-
-    static void setCurrentUser(String username) {
-        currentUser = username;
-    }
-
-    static void resetSession() {
-        currentUser = null;
-    }
-}
-
 public class StudentLogin {
 
     private static MongoClient mongoClient;
     private static MongoDatabase database;
     private static MongoCollection<Document> studentCollection;
-
+    
     public static void main(String[] args) {
+    	
         try {
             initializeMongoDB();
-
             Scanner scanner = new Scanner(System.in);
+            
 
             while (true) {
                 if (Session.getCurrentUser() == null) {
@@ -48,14 +33,14 @@ public class StudentLogin {
                         choice = scanner.nextInt();
                         scanner.nextLine();
                     } catch (InputMismatchException e) {
-                        System.out.println("Invalid input. Please enter a number.");
+                        System.out.println("Invalid input. Please select valid option.");
                         scanner.nextLine();
                         continue;
                     }
 
                     switch (choice) {
                         case 1:
-                            login(scanner, studentCollection);
+                            login(studentCollection);
                             break;
                         case 2:
                             System.out.println("Exiting the Student module.");
@@ -92,14 +77,15 @@ public class StudentLogin {
                     }
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.err.println("An unexpected error occurred: " + e.getMessage());
         }
     }
 
     private static void initializeMongoDB() {
         try {
-            // Replace the connection string with your MongoDB connection string
+            
             String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
             MongoClient mongoClient = MongoClients.create(connectionString);
                         
@@ -112,8 +98,9 @@ public class StudentLogin {
         }
     }
 
-    private static void login(Scanner scanner, MongoCollection<Document> collection) {
+    private static void login(MongoCollection<Document> collection) {
         try {
+        	Scanner scanner = new Scanner(System.in);
             System.out.print("Enter username: ");
             String username = scanner.nextLine();
 
@@ -151,4 +138,3 @@ public class StudentLogin {
         }
     }
 }
-

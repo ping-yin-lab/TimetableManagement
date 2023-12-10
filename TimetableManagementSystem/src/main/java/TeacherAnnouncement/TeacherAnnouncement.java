@@ -7,6 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import com.mongodb.client.FindIterable;
 
 public class TeacherAnnouncement {
 
@@ -20,12 +21,12 @@ public class TeacherAnnouncement {
             initializeMongoDB(); 
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter the subject of announcement: ");
-            String title = scanner.nextLine();
+            String subject = scanner.nextLine();
 
             System.out.print("Enter the description of announcement: ");
-            String content = scanner.nextLine();
+            String announcement = scanner.nextLine();
            
-            insertAnnouncement(title, content);
+            insertAnnouncement(subject, announcement);
 
             
             mongoClient.close();
@@ -50,12 +51,12 @@ public class TeacherAnnouncement {
         }
     }
 
-    private static void insertAnnouncement(String title, String content) {
+    private static void insertAnnouncement(String subject, String announcement) {
         try {
           
             Document announcementDocument = new Document()
-                    .append("title", title)
-                    .append("content", content);
+                    .append("subject", subject)
+                    .append("announcement", announcement);
 
             
             announcementCollection.insertOne(announcementDocument);
@@ -63,6 +64,22 @@ public class TeacherAnnouncement {
             System.out.println("Announcement published!");
         } catch (Exception e) {
             System.err.println("Error publishing announcement: " + e.getMessage());
+        }
+    }
+    public static void getAnnouncements() {
+        try {
+            
+            FindIterable<Document> announcements = announcementCollection.find();
+
+            
+            System.out.println("Announcements:");
+            for (Document announcement : announcements) {
+                System.out.println("Subject : " + announcement.getString("subject"));
+                System.out.println("Announcement : " + announcement.getString("Announcement"));
+                System.out.println("--------------");
+            }
+        } catch (Exception e) {
+            System.err.println("Error retrieving announcements: " + e.getMessage());
         }
     }
 }
