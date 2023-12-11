@@ -73,4 +73,9 @@ public class TeacherPasswordUpdate {
             System.err.println("Error updating password: " + e.getMessage());
         }
     }
+
+	public void setMongoClient(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
 }
