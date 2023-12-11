@@ -251,6 +251,20 @@ class studentDatabase {
             System.err.println("Error deleting student: " + e.getMessage());
         }
     }
+
+    public void searchSTUById(String studentId) {
+        Document studentDocument = STusersCollection.find(new Document("Student_ID", studentId)).first();
+        if (studentDocument != null) {
+            System.out.println("Details of the given userID are:");
+            System.out.println("Student ID is " + studentDocument.get("Student_ID"));
+            System.out.println("First Name is " + studentDocument.get("first_name"));
+            System.out.println("Last Name is " + studentDocument.get("last_name"));
+            System.out.println("Course selected: " + studentDocument.get("course"));
+            System.out.println("Username of the student: " + studentDocument.get("username"));
+        } else {
+            System.out.println("Given Student ID not found.");
+        }
+    }
 }
 
 class teacherDatabase {
@@ -975,16 +989,17 @@ public class adminOperation {
             System.out.println("4. Add Student");
             System.out.println("5. Display Students");
             System.out.println("6. Delete Student");
-            System.out.println("7. Add Teacher");
-            System.out.println("8. Display Teachers");
-            System.out.println("9. Delete Teacher");
-            System.out.println("10. Update User");
-            System.out.println("11. Add Module");
-            System.out.println("12. Add Lecture Hall");
-            System.out.println("13. Post an Announcement");
-            System.out.println("14. Schedule Management");
-            System.out.println("15. Contact Management");
-            System.out.println("16. Exit");
+            System.out.println("7. Search student by ID");
+            System.out.println("8. Add Teacher");
+            System.out.println("9. Display Teachers");
+            System.out.println("10. Delete Teacher");
+            System.out.println("11. Update User");
+            System.out.println("12. Add Module");
+            System.out.println("13. Add Lecture Hall");
+            System.out.println("14. Post an Announcement");
+            System.out.println("15. Schedule Management");
+            System.out.println("16. Contact Management");
+            System.out.println("17. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -1045,8 +1060,14 @@ public class adminOperation {
                     String STId = scanner.nextLine();
                     STdatabase.deleteSTuser(STId);
                     break;
-
                 case 7:
+                    System.out.println("Search student by id");
+                    System.out.println("=======================================");
+                    System.out.print("Enter Student ID: ");
+                    String studentId = scanner.nextLine();
+                    STdatabase.searchSTUById(studentId);
+                    break;
+                case 8:
                     System.out.print("Enter Teacher Id: ");
                     String TEid = scanner.nextLine();
                     System.out.print("Enter First Name: ");
@@ -1064,17 +1085,17 @@ public class adminOperation {
                     TEdatabase.TEaddUser(TEnewUser);
                     break;
 
-                case 8:
+                case 9:
                     TEdatabase.displayTEUsers();
                     break;
 
-                case 9:
+                case 10:
                     System.out.print("Enter teacher ID to delete: ");
                     String TEId = scanner.nextLine();
                     TEdatabase.deleteTEuser(TEId);
                     break;
 
-                case 10:
+                case 11:
                     System.out.println("Enter user type");
                     System.out.println("1. Admin");
                     System.out.println("2. Teacher");
@@ -1106,7 +1127,7 @@ public class adminOperation {
                     }
                     break;
 
-                case 11:
+                case 12:
                     System.out.print("Enter Module Code: ");
                     String MDcode = scanner.nextLine();
                     System.out.print("Enter Module Name: ");
@@ -1120,7 +1141,7 @@ public class adminOperation {
                     MDdatabase.addModule(newMod);
                     break;
 
-                case 12:
+                case 13:
                     System.out.print("Enter Class Code: ");
                     String LHcode = scanner.nextLine();
                     System.out.print("Enter Building Name: ");
@@ -1132,7 +1153,7 @@ public class adminOperation {
                     LectureHall newHall = new LectureHall(LHcode, LHbuilding, LHroom, LHpeople);
                     LHdatabase.addLH(newHall);
                     break;
-                case 13:
+                case 14:
                     System.out.print("Enter Title: ");
                     String ANtitle = scanner.nextLine();
                     System.out.print("Enter Message: ");
@@ -1140,14 +1161,13 @@ public class adminOperation {
                     Announcement newAnnouncement = new Announcement(ANtitle, ANmessage);
                     ANdatabase.addAN(newAnnouncement);
                     break;
-                case 14:
+                case 15:
                     System.out.println("Schedule Management System");
-                    System.out.println("1. Class Schedule");
-                    System.out.println("2. Exam Schedule");
-                    System.out.println("3. Holiday Schedule");
-                    System.out.println("4. Custom Event Schedule");
-                    System.out.println("5. Personal Admin Schedule");
-                    System.out.println("6. Exit to main menu");
+                    System.out.println("1. Exam Schedule");
+                    System.out.println("2. Holiday Schedule");
+                    System.out.println("3. Custom Event Schedule");
+                    System.out.println("4. Personal Admin Schedule");
+                    System.out.println("5. Exit to main menu");
                     System.out.println("Input : ");
                     int Schedule_choice = scanner.nextInt();
                     scanner.nextLine(); // Consume the newline character
@@ -1159,8 +1179,6 @@ public class adminOperation {
                     LocalDateTime eddt;
                     switch (Schedule_choice) {
                         case 1:
-                            break;
-                        case 2:
                             System.out.println("==== Exam Management ====");
                             SDDatabase.displayExam();
                             System.out.println("1. Add new Exam Schedule");
@@ -1248,7 +1266,7 @@ public class adminOperation {
                                     break;
                             }
                             break;
-                        case 3:
+                        case 2:
                             System.out.println("==== Holiday Management ====");
                             SDDatabase.displayHoliday();
                             System.out.println("1. Add new Holiday Schedule");
@@ -1335,7 +1353,7 @@ public class adminOperation {
                                     break;
                             }
                             break;
-                        case 4:
+                        case 3:
                             System.out.println("==== Customer Event Management ====");
                             SDDatabase.displayCEvent();
                             System.out.println("1. Add new Event Schedule");
@@ -1425,7 +1443,7 @@ public class adminOperation {
                                     System.out.println("Invalid input entered");
                             }
                             break;
-                        case 5:
+                        case 4:
                             System.out.println("==== Personal Admin Schedule ====");
                             SDDatabase.displayPersonalAdmin();
                             System.out.println("1. Add new admin Schedule");
@@ -1518,7 +1536,7 @@ public class adminOperation {
                             }
                     }
                     break;
-                case 15:
+                case 16:
                     System.out.println("==== Contact Management ====");
                     CTDatabase.displayContact();
                     System.out.println("1. Add new Contact");
@@ -1566,7 +1584,7 @@ public class adminOperation {
                             break;
                     }
                     break;
-                case 16:
+                case 17:
                     System.out.println("Exiting the admin panel. Goodbye!");
                     dummy = 1;
                     break;

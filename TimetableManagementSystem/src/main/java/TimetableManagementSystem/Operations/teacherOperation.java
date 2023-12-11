@@ -2,6 +2,7 @@ package TimetableManagementSystem.Operations;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -77,7 +78,7 @@ class Tcontact {
     public String email;
     public String telephone;
 
-    public Tcontact(String userid,String name, String type, String email, String telephone) {
+    public Tcontact(String userid, String name, String type, String email, String telephone) {
         this.userid = userid;
         this.name = name;
         this.type = type;
@@ -174,7 +175,6 @@ class TcontactDatabase {
         ContactCollection.find(filter).forEach(document -> System.out.println("Name: " + document.get("name")
                 + ", Email: " + document.get("email") + ", phone: " + document.get("phone")));
     }
-    
 
     public Document displayContactspecific(String name) {
         Document result = new Document();
@@ -344,6 +344,61 @@ class TscheduleDatabase {
     }
 }
 
+class TeacherFeedback {
+    private String teacherId;
+    private String feedbackText;
+    private String rating;
+
+    public TeacherFeedback(String teacherId, String feedbackText, String rating) {
+        this.teacherId = teacherId;
+        this.feedbackText = feedbackText;
+        this.rating = rating;
+    }
+
+    public String getTeacherId() {
+        return teacherId;
+    }
+
+    public String getFeedbackText() {
+        return feedbackText;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+}
+
+class TeacherFeedbackDatabase {
+    private MongoCollection<Document> feedbackCollection;
+
+    public TeacherFeedbackDatabase() {
+        String connectionString = "mongodb+srv://pfy1:uol123@timetablemanagement.uq12hfp.mongodb.net/?retryWrites=true&w=majority";
+        String databaseName = "FeedbackDB";
+        String collectionName = "FeedbackCollection";
+
+        try {
+            ConnectionString connString = new ConnectionString(connectionString);
+            MongoClient mongoClient = MongoClients.create(connectionString);
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            feedbackCollection = database.getCollection(collectionName);
+            System.out.println("successfully connected to student Database");
+        } catch (Exception e) {
+            System.err.println("Error connecting: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    public void displayTeacherFeedback(String teacherId) {
+        System.out.println("List of Feedback for Teacher " + teacherId + ":");
+        feedbackCollection.find(new Document("Teacher_ID", teacherId)).forEach(
+                (Consumer<? super Document>) document -> System.out.println("Student ID: " + document.get("Stu_ID") +
+                        ", Feedback Text: " + document.get("Feedback_Text") +
+                        ", Reply: " + document.get("Reply")));
+    }
+    // Add methods for updating and deleting feedback if needed
+}
+
 public class teacherOperation {
     public static void main(String[] args) {
         String sessionid = args[0];
@@ -351,8 +406,10 @@ public class teacherOperation {
         TcontactDatabase CTDatabase = new TcontactDatabase();
         TmoduleDatabase ModuleDatabase = new TmoduleDatabase();
         TscheduleDatabase SDDatabase = new TscheduleDatabase();
+        TeacherFeedbackDatabase teacherFeedbackDatabase = new TeacherFeedbackDatabase();
         Scanner reader = new Scanner(System.in);
-        while (true) {
+        int dummy = 0;
+        while (dummy == 0) {
             System.out.println("Welcome to Teacher System");
             System.out.println("==========================");
             System.out.println("Choose the menu below");
@@ -361,7 +418,8 @@ public class teacherOperation {
             System.out.println("3. Time off Management");
             System.out.println("4. Contact Management");
             System.out.println("5. Your Modules");
-            System.out.println("6. Exit");
+            System.out.println("6. Your feedback");
+            System.out.println("7. Exit");
             System.out.print("Input : ");
             String choice = reader.nextLine();
             switch (choice) {
@@ -435,7 +493,7 @@ public class teacherOperation {
                                 break;
                         }
                     } while (PerSche != 4);
-                    break;  
+                    break;
                 case "2":
                     int classindex;
                     do {
@@ -599,7 +657,8 @@ public class teacherOperation {
                             System.out.print("Enter your phone :");
                             String conphone = reader.nextLine();
 
-                            Tcontact contactelement = new Tcontact(sessionid,contactName, "Teacher", conemail, conphone);
+                            Tcontact contactelement = new Tcontact(sessionid, contactName, "Teacher", conemail,
+                                    conphone);
                             CTDatabase.addContact(contactelement);
                             break;
                         case 2:
@@ -613,7 +672,8 @@ public class teacherOperation {
                             System.out.print("Enter your new phone :");
                             conphone = reader.nextLine();
 
-                            Tcontact updatecontactelement = new Tcontact(sessionid,target, "Teacher", conemail, conphone);
+                            Tcontact updatecontactelement = new Tcontact(sessionid, target, "Teacher", conemail,
+                                    conphone);
                             CTDatabase.updateContact(updatecontactelement);
                             break;
                         case 3:
@@ -631,6 +691,15 @@ public class teacherOperation {
                     break;
                 case "5":
                     ModuleDatabase.displayModuleTeacher("teacher1");
+                    break;
+                case "6":
+                    System.out.print("Enter Teacher ID: ");
+                    String teacherId = reader.nextLine();
+                    teacherFeedbackDatabase.displayTeacherFeedback(teacherId);
+                    break;
+                case "7":
+                System.out.println("Going back to login .. ");
+                    dummy = 1;
                     break;
                 default:
                     System.out.println("Invalid input!");

@@ -1,5 +1,8 @@
 package TimetableManagementSystem.Logins;
 
+import TimetableManagementSystem.Operations.studentOperation;
+import TimetableManagementSystem.Operations.teacherOperation;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -51,6 +54,7 @@ public class StudentLogin {
                             System.out.println("Invalid option. Please choose a valid option.");
                     }
                 } else {
+                    String[] currentuser = {Session.getCurrentUser()};
                     System.out.println("Student (Logged in as " + Session.getCurrentUser() + "):");
                     System.out.println("1. Perform Student Operations");
                     System.out.println("2. Logout");
@@ -68,6 +72,8 @@ public class StudentLogin {
 
                     switch (choice) {
                         case 1:
+                            studentOperation studentsys = new studentOperation();
+                            studentsys.main(currentuser);
                             performStudentOperations();
                             break;
                         case 2:
