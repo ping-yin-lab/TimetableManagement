@@ -73,4 +73,9 @@ public class TeacherPasswordUpdate {
             System.err.println("Error updating password: " + e.getMessage());
         }
     }
+
+	// Method to set the MongoDB client (for testing purposes)
+    public void setMongoClient(MongoClient mongoClient) {
+        this.mongoClient = mongoClient;
+    }
 }

@@ -68,7 +68,7 @@ public class TeacherLogin {
 
                     switch (choice) {
                         case 1:
-                            performStudentOperations();
+                            performTeacherOperations();
                             break;
                         case 2:
                             logout();
@@ -119,7 +119,7 @@ public class TeacherLogin {
         }
     }
 
-    private static void performStudentOperations() {
+    private static void performTeacherOperations() {
         try {
             System.out.println("Perform Teacher Operations...");
             TeacherAnnouncement teacherAnnouncement = new TeacherAnnouncement();

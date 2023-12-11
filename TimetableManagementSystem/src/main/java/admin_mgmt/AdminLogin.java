@@ -66,7 +66,7 @@ public class AdminLogin {
 
                     switch (choice) {
                         case 1:
-                            performStudentOperations();
+                            performAdminOperations();
                             break;
                         case 2:
                             logout();
@@ -116,7 +116,7 @@ public class AdminLogin {
         }
     }
 
-    private static void performStudentOperations() {
+    private static void performAdminOperations() {
         try {
             System.out.println("Performing Student Operations...");
             // Add your student-specific operations here
