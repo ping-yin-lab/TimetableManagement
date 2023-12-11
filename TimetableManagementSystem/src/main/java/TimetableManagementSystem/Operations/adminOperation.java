@@ -211,7 +211,8 @@ class studentDatabase {
     public void displaySTUsers() {
         System.out.println("List of Students:");
         STusersCollection.find().forEach(document -> System.out
-                .println("Username: " + document.get("username") + ", Password: " + document.get("password")));
+                .println("Student ID: " + document.get("Student_ID") + "Username: " + document.get("username")
+                        + ", Password: " + document.get("password")));
     }
 
     public void STUpdate(String studentId, String newFName, String newLName, String newCourse, String newUsername,
@@ -314,7 +315,8 @@ class teacherDatabase {
     public void displayTEUsers() {
         System.out.println("List of Teachers:");
         TEusersCollection.find().forEach(document -> System.out
-                .println("Username: " + document.get("username") + ", Password: " + document.get("password")));
+                .println("Teacher ID: " + document.get("Teacher_ID") + "  Username: " + document.get("username")
+                        + ", Password: " + document.get("password")));
     }
 
     public void TEUpdate(String userIdToUpdate, String newFName, String newLName, String newCourse, String newUsername,
@@ -983,6 +985,7 @@ public class adminOperation {
         checkDateValidity dttester = new checkDateValidity();
         int dummy = 0;
         while (dummy == 0) {
+            System.out.println("============Admin Panel============");
             System.out.println("1. Add Admin");
             System.out.println("2. Display Admin");
             System.out.println("3. Delete Admin");
@@ -1162,6 +1165,7 @@ public class adminOperation {
                     ANdatabase.addAN(newAnnouncement);
                     break;
                 case 15:
+                    clearScreen();
                     System.out.println("Schedule Management System");
                     System.out.println("1. Exam Schedule");
                     System.out.println("2. Holiday Schedule");
@@ -1537,6 +1541,7 @@ public class adminOperation {
                     }
                     break;
                 case 16:
+                    clearScreen();
                     System.out.println("==== Contact Management ====");
                     CTDatabase.displayContact();
                     System.out.println("1. Add new Contact");

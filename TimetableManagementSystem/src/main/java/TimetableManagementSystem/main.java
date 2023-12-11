@@ -5,6 +5,7 @@ import TimetableManagementSystem.Logins.*;
 
 public class main {
      public static void main(String[] args) {
+        clearScreen();
         Start();
     }
 
