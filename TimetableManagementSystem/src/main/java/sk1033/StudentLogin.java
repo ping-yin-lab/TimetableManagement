@@ -12,7 +12,7 @@ public class StudentLogin {
 
     private static MongoClient mongoClient;
     private static MongoDatabase database;
-    private static MongoCollection<Document> studentCollection;
+    static MongoCollection<Document> studentCollection;
     
     public static void studentLoginStart() {
     	
@@ -99,7 +99,7 @@ public class StudentLogin {
         }
     }
 
-    private static void login(MongoCollection<Document> collection) {
+    static void login(MongoCollection<Document> collection) {
         try {
         	Scanner scanner = new Scanner(System.in);
             System.out.print("Enter username: ");

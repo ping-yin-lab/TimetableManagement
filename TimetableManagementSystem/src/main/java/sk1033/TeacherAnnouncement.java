@@ -49,7 +49,7 @@ public class TeacherAnnouncement {
         }
     }
 
-    private static void insertAnnouncement(String subject, String announcement) {
+    static void insertAnnouncement(String subject, String announcement) {
         try {
           
             Document announcementDocument = new Document()

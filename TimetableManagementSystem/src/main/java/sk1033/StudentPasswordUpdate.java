@@ -72,6 +72,11 @@ public class StudentPasswordUpdate {
         }
     }
 
+	public void setMongoClient(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 
 
